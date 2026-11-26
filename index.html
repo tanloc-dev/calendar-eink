@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="vi"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lịch E-Ink">
+  <title>Lịch Để Bàn E-Ink — Âm Lịch &amp; Thời Khóa Biểu</title>
+  <style>
+    :root {
+      --eink-bg: #EAE8E1;
+      --eink-surface: #E2DFD6;
+      --eink-ink: #141413;
+      --eink-muted: #57554E;
+      --eink-border: #1F1E1B;
+      --eink-accent: #141413;
+      --eink-accent-fg: #EAE8E1;
+      --eink-highlight: #D5D1C5;
+    }
+
+    [data-eink-theme="tri-color"] {
+      --eink-bg: #F3F0E8;
+      --eink-surface: #E9E4D8;
+      --eink-ink: #121212;
+      --eink-muted: #5A564D;
+      --eink-border: #1A1917;
+      --eink-accent: #B91C1C;
+      --eink-accent-fg: #FAF8F5;
+      --eink-highlight: #FDE8E8;
+    }
+
+    [data-eink-theme="warm"] {
+      --eink-bg: #F4ECD8;
+      --eink-surface: #EBE0C7;
+      --eink-ink: #241D15;
+      --eink-muted: #6B5E4C;
+      --eink-border: #3A2E21;
+      --eink-accent: #7C2D12;
+      --eink-accent-fg: #FAF5E8;
+      --eink-highlight: #E2D4B5;
+    }
+
+    [data-eink-theme="dark"] {
+      --eink-bg: #171715;
+      --eink-surface: #22221F;
+      --eink-ink: #EAE6DC;
+      --eink-muted: #9C978B;
+      --eink-border: #525049;
+      --eink-accent: #EAE6DC;
+      --eink-accent-fg: #171715;
+      --eink-highlight: #2E2E2A;
+    }
+
+    * {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #D4D1C8;
+      color: #18181B;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      -webkit-text-size-adjust: 100%;
+      min-height: 100%;
+    }
+
+    .hidden { display: none !important; }
+
+    .font-mono-eink {
+      font-family: "Menlo", "Courier New", Courier, monospace;
+    }
+
+    /* Top Navigation Bar */
+    .top-bar {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: #18181B;
+      color: #F4F4F5;
+      border-bottom: 1px solid #27272A;
+      padding: 8px 12px;
+    }
+    .top-bar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      -webkit-flex-wrap: wrap;
+      flex-wrap: wrap;
+    }
+    .brand-wrap {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+    }
+    .brand-logo {
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      text-align: center;
+      border-radius: 7px;
+      background: #F4F4F5;
+      color: #18181B;
+      font-weight: 800;
+      font-size: 13px;
+      margin-right: 9px;
+      display: inline-block;
+    }
+    .brand-title { font-size: 13px; font-weight: 700; line-height: 1.2; }
+    .brand-sub { font-size: 10px; color: #A1A1AA; }
+
+    .nav-actions {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+    }
+    .nav-btn {
+      border: 0;
+      border-radius: 7px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 5px;
+      background: transparent;
+      color: #D4D4D8;
+      display: inline-block;
+    }
+    .nav-btn.active {
+      background: #F4F4F5;
+      color: #18181B;
+    }
+    .nav-btn:hover { opacity: 0.9; }
+
+    /* Display Container */
+    .display-main {
+      padding: 14px;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    /* E-Ink Bezel & Screen */
+    .eink-bezel {
+      background: #232321;
+      padding: 14px;
+      border-radius: 18px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+      border: 2px solid #353532;
+    }
+    .eink-screen {
+      background-color: #EAE8E1;
+      background-color: var(--eink-bg);
+      color: #141413;
+      color: var(--eink-ink);
+      border: 2px solid #1F1E1B;
+      border-color: var(--eink-border);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .eink-grain::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      opacity: 0.045;
+      background-image: radial-gradient(#141413 0.7px, transparent 0.7px);
+      background-size: 4px 4px;
+      z-index: 20;
+    }
+
+    @keyframes einkFlashAnim {
+      0% { -webkit-filter: invert(0); filter: invert(0); }
+      30% { -webkit-filter: invert(1); filter: invert(1); }
+      60% { -webkit-filter: invert(0.85); filter: invert(0.85); }
+      100% { -webkit-filter: invert(0); filter: invert(0); }
+    }
+    @-webkit-keyframes einkFlashAnim {
+      0% { -webkit-filter: invert(0); }
+      30% { -webkit-filter: invert(1); }
+      60% { -webkit-filter: invert(0.85); }
+      100% { -webkit-filter: invert(0); }
+    }
+    .eink-flashing {
+      -webkit-animation: einkFlashAnim 0.4s steps(3, end);
+      animation: einkFlashAnim 0.4s steps(3, end);
+    }
+
+    .eink-status-bar {
+      padding: 7px 12px;
+      border-bottom: 2px solid var(--eink-border);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      overflow: hidden;
+    }
+    .eink-status-left { float: left; max-width: 65%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .eink-status-right { float: right; }
+
+    /* Two-column E-Ink Body (Table-based for iOS 9 Safari compatibility) */
+    .eink-body {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+    .eink-col-left {
+      display: table-cell;
+      width: 42%;
+      vertical-align: top;
+      padding: 12px;
+      border-right: 2px solid var(--eink-border);
+    }
+    .eink-col-right {
+      display: table-cell;
+      width: 58%;
+      vertical-align: top;
+      padding: 12px;
+    }
+
+    /* Clock & Date */
+    .clock-row {
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .clock-digits {
+      float: left;
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .clock-sec { font-size: 18px; opacity: 0.75; }
+    .clock-suffix { font-size: 12px; font-weight: 700; margin-left: 2px; }
+    .date-meta {
+      float: right;
+      text-align: right;
+    }
+    .date-dow {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--eink-accent);
+    }
+    .date-solar {
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* Lunar Box */
+    .lunar-box {
+      padding: 7px 9px;
+      border: 1px solid var(--eink-border);
+      background-color: var(--eink-surface);
+      border-radius: 7px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .lunar-title { font-size: 11px; font-weight: 700; }
+    .lunar-sub { font-size: 10px; color: var(--eink-muted); margin-top: 2px; }
+    .holiday-badge {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      background-color: var(--eink-accent);
+      color: var(--eink-accent-fg);
+    }
+
+    /* Scene Box */
+    .scene-box {
+      border: 1px solid var(--eink-border);
+      background-color: var(--eink-surface);
+      border-radius: 7px;
+      padding: 3px 6px 0 6px;
+      margin-bottom: 9px;
+    }
+    .scene-svg {
+      width: 100%;
+      height: 76px;
+      display: block;
+    }
+
+    /* Timetable */
+    .tt-header {
+      overflow: hidden;
+      margin-bottom: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .tt-header-left { float: left; }
+    .tt-header-right { float: right; color: var(--eink-muted); font-weight: 600; }
+    .tt-list {
+      max-height: 180px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tt-item {
+      padding: 6px 8px;
+      border: 1px solid var(--eink-border);
+      border-radius: 6px;
+      background-color: var(--eink-surface);
+      margin-bottom: 5px;
+      overflow: hidden;
+    }
+    .tt-item.is-now {
+      background-color: var(--eink-accent);
+      color: var(--eink-accent-fg);
+    }
+    .tt-item.is-past { opacity: 0.5; }
+    .tt-time {
+      float: left;
+      width: 78px;
+      font-size: 10px;
+      font-weight: 700;
+      padding-top: 1px;
+    }
+    .tt-info {
+      margin-left: 82px;
+    }
+    .tt-title { font-size: 11px; font-weight: 700; line-height: 1.25; }
+    .tt-note { font-size: 10px; opacity: 0.8; }
+
+    /* Calendar */
+    .cal-top {
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .cal-month-title {
+      float: left;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 28px;
+    }
+    .cal-nav {
+      float: right;
+    }
+    .cal-btn {
+      border: 1px solid var(--eink-border);
+      background: transparent;
+      color: var(--eink-ink);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 3px;
+    }
+
+    .cal-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      border: 1px solid var(--eink-border);
+    }
+    .cal-table th {
+      background-color: var(--eink-surface);
+      border-bottom: 1px solid var(--eink-border);
+      border-right: 1px solid var(--eink-border);
+      padding: 5px 2px;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+      color: var(--eink-muted);
+    }
+    .cal-table th.is-sun { color: var(--eink-accent); }
+    .cal-table td {
+      border-top: 1px solid var(--eink-border);
+      border-right: 1px solid var(--eink-border);
+      padding: 0;
+      vertical-align: top;
+      height: 46px;
+    }
+    .cal-cell-btn {
+      width: 100%;
+      height: 100%;
+      min-height: 45px;
+      border: 0;
+      background: transparent;
+      color: var(--eink-ink);
+      padding: 4px 5px;
+      text-align: left;
+      cursor: pointer;
+      display: block;
+      position: relative;
+    }
+    .cal-cell-btn.is-selected {
+      background-color: var(--eink-accent);
+      color: var(--eink-accent-fg);
+      font-weight: 800;
+    }
+    .cal-cell-btn.is-today {
+      background-color: var(--eink-highlight);
+      font-weight: 800;
+      box-shadow: inset 0 0 0 2px var(--eink-ink);
+    }
+    .cal-solar-num {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+      display: inline-block;
+    }
+    .cal-solar-num.is-special { color: var(--eink-accent); }
+    .cal-cell-btn.is-selected .cal-solar-num.is-special { color: var(--eink-accent-fg); }
+    .cal-dot {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: currentColor;
+      opacity: 0.55;
+    }
+    .cal-lunar-num {
+      display: block;
+      margin-top: 10px;
+      font-size: 9px;
+      color: var(--eink-muted);
+      line-height: 1;
+    }
+    .cal-lunar-num.is-special { color: var(--eink-accent); font-weight: 700; }
+    .cal-cell-btn.is-selected .cal-lunar-num { color: var(--eink-accent-fg); opacity: 0.9; }
+
+    .eink-footer {
+      margin-top: 8px;
+      padding-top: 7px;
+      border-top: 1px solid var(--eink-border);
+      font-size: 10px;
+      overflow: hidden;
+    }
+    .eink-quote {
+      float: left;
+      max-width: 72%;
+      font-style: italic;
+      color: var(--eink-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .eink-admin-link {
+      float: right;
+      border: 0;
+      background: transparent;
+      color: var(--eink-ink);
+      font-size: 10px;
+      font-weight: 800;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* =====================================================================
+       iPOD TOUCH 5th GEN (320x568 Portrait & 568x320 Landscape) & MOBILE
+       ===================================================================== */
+    @media (max-width: 600px) {
+      .display-main { padding: 6px; }
+      .eink-bezel { padding: 6px; border-radius: 10px; }
+      .eink-status-bar { padding: 5px 8px; font-size: 9px; }
+      .eink-body, .eink-col-left, .eink-col-right {
+        display: block;
+        width: 100%;
+      }
+      .eink-col-left {
+        border-right: 0;
+        border-bottom: 2px solid var(--eink-border);
+        padding: 9px;
+      }
+      .eink-col-right { padding: 9px; }
+      .clock-digits { font-size: 32px; }
+      .scene-svg { height: 60px; }
+      .cal-month-title { font-size: 15px; line-height: 24px; }
+      .cal-table td { height: 38px; }
+      .cal-cell-btn { min-height: 37px; padding: 3px; }
+      .cal-solar-num { font-size: 12px; }
+      .cal-lunar-num { margin-top: 6px; font-size: 8px; }
+      .brand-sub { display: none; }
+      .hide-xs { display: none; }
+    }
+
+    /* iPod Touch 5 Landscape (568x320) & Compact Preview */
+    @media (max-height: 380px) and (min-width: 480px) {
+      .top-bar { padding: 4px 8px; }
+      .display-main { padding: 4px; }
+      .eink-bezel { padding: 5px; border-radius: 8px; }
+      .eink-status-bar { padding: 3px 8px; font-size: 9px; }
+      .eink-body { display: table; }
+      .eink-col-left { display: table-cell; width: 44%; border-right: 2px solid var(--eink-border); border-bottom: 0; padding: 7px; }
+      .eink-col-right { display: table-cell; width: 56%; padding: 7px; }
+      .clock-digits { font-size: 26px; }
+      .lunar-box { padding: 4px 6px; margin-bottom: 5px; }
+      .scene-box { margin-bottom: 5px; }
+      .scene-svg { height: 48px; }
+      .tt-list { max-height: 76px; }
+      .tt-item { padding: 3px 5px; margin-bottom: 3px; }
+      .cal-month-title { font-size: 13px; line-height: 22px; }
+      .cal-btn { padding: 2px 6px; font-size: 10px; }
+      .cal-table td { height: 30px; }
+      .cal-cell-btn { min-height: 29px; padding: 2px 3px; }
+      .cal-solar-num { font-size: 11px; }
+      .cal-lunar-num { margin-top: 3px; font-size: 8px; }
+      .eink-footer { margin-top: 4px; padding-top: 4px; }
+    }
+
+    /* Simulated Preview Sizes in Admin */
+    .preview-ipod-land .eink-bezel { padding: 7px; border-radius: 12px; }
+    .preview-ipod-land .clock-digits { font-size: 26px; }
+    .preview-ipod-land .scene-svg { height: 48px; }
+    .preview-ipod-land .tt-list { max-height: 92px; }
+    .preview-ipod-land .cal-table td { height: 32px; }
+    .preview-ipod-land .cal-cell-btn { min-height: 31px; padding: 2px 3px; }
+    .preview-ipod-land .cal-lunar-num { margin-top: 4px; }
+
+    .preview-ipod-port .eink-bezel { padding: 7px; border-radius: 12px; }
+    .preview-ipod-port .eink-body,
+    .preview-ipod-port .eink-col-left,
+    .preview-ipod-port .eink-col-right { display: block; width: 100%; }
+    .preview-ipod-port .eink-col-left { border-right: 0; border-bottom: 2px solid var(--eink-border); padding: 9px; }
+    .preview-ipod-port .eink-col-right { padding: 9px; }
+    .preview-ipod-port .clock-digits { font-size: 30px; }
+    .preview-ipod-port .scene-svg { height: 56px; }
+    .preview-ipod-port .cal-table td { height: 36px; }
+    .preview-ipod-port .cal-cell-btn { min-height: 35px; padding: 2px 3px; }
+    .preview-ipod-port .cal-lunar-num { margin-top: 5px; }
+
+    /* =====================================================================
+       ADMIN PANEL STYLES
+       ===================================================================== */
+    .admin-wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 14px;
+    }
+    .admin-layout {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+    .admin-left {
+      display: table-cell;
+      width: 42%;
+      vertical-align: top;
+      padding-right: 14px;
+    }
+    .admin-right {
+      display: table-cell;
+      width: 58%;
+      vertical-align: top;
+    }
+    @media (max-width: 960px) {
+      .admin-layout, .admin-left, .admin-right {
+        display: block;
+        width: 100%;
+        padding-right: 0;
+      }
+      .admin-left { margin-bottom: 14px; }
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E4E4E7;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    .card-head {
+      padding: 10px 14px;
+      background: #FAFAFA;
+      border-bottom: 1px solid #E4E4E7;
+      overflow: hidden;
+    }
+    .card-head-title { font-size: 13px; font-weight: 700; color: #18181B; }
+    .card-head-sub { font-size: 11px; color: #71717A; margin-top: 2px; }
+
+    .tabs-bar {
+      background: #F4F4F5;
+      border-bottom: 1px solid #E4E4E7;
+      padding: 6px 8px 0 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .admin-tab-btn {
+      border: 1px solid transparent;
+      border-bottom: 0;
+      background: transparent;
+      color: #71717A;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 7px 10px;
+      border-radius: 7px 7px 0 0;
+      cursor: pointer;
+    }
+    .admin-tab-btn.active {
+      background: #FFFFFF;
+      color: #18181B;
+      border-color: #E4E4E7;
+    }
+
+    .admin-body {
+      padding: 14px;
+      max-height: 70vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .field-group { margin-bottom: 12px; }
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #3F3F46;
+      margin-bottom: 4px;
+    }
+    .inp {
+      width: 100%;
+      padding: 7px 10px;
+      font-size: 12px;
+      border: 1px solid #D4D4D8;
+      border-radius: 7px;
+      background: #FFFFFF;
+      color: #18181B;
+    }
+    .opt-grid {
+      overflow: hidden;
+      margin: 0 -4px;
+    }
+    .opt-col {
+      float: left;
+      width: 50%;
+      padding: 0 4px 8px 4px;
+    }
+    .opt-btn {
+      width: 100%;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid #E4E4E7;
+      background: #FFFFFF;
+      cursor: pointer;
+    }
+    .opt-btn.active {
+      border-color: #18181B;
+      background: #F4F4F5;
+    }
+    .opt-title { font-size: 11px; font-weight: 700; color: #18181B; }
+    .opt-sub { font-size: 10px; color: #71717A; margin-top: 2px; }
+    .swatch {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 1px solid #A1A1AA;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+
+    .chk-row {
+      display: block;
+      padding: 5px 0;
+      font-size: 12px;
+      color: #27272A;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .chk-row input { float: right; width: 16px; height: 16px; }
+
+    .btn-primary {
+      background: #18181B;
+      color: #FFFFFF;
+      border: 0;
+      border-radius: 7px;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: #FFFFFF;
+      color: #18181B;
+      border: 1px solid #D4D4D8;
+      border-radius: 7px;
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .pill-btn {
+      border: 1px solid #D4D4D8;
+      background: #FFFFFF;
+      color: #3F3F46;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      margin: 0 3px 4px 0;
+      cursor: pointer;
+    }
+    .pill-btn.active {
+      background: #18181B;
+      color: #FFFFFF;
+      border-color: #18181B;
+    }
+
+    .tt-admin-item {
+      padding: 8px 10px;
+      border: 1px solid #E4E4E7;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+    .tt-admin-del {
+      float: right;
+      border: 0;
+      background: #FEF2F2;
+      color: #DC2626;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .preview-bar {
+      background: #FFFFFF;
+      border: 1px solid #E4E4E7;
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .preview-size-btn {
+      border: 0;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #F4F4F5;
+      color: #3F3F46;
+      margin-left: 3px;
+    }
+    .preview-size-btn.active {
+      background: #18181B;
+      color: #FFFFFF;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 14px;
+      right: 14px;
+      z-index: 60;
+      background: #18181B;
+      color: #FFFFFF;
+      padding: 9px 14px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+  </style>
+<script>window.__PRELOADED_CONFIG__ = {"title":"E-INK DESK · BÀN LÀM VIỆC","theme":"tri-color","timeFormat":"24h","weekStart":1,"showSeconds":true,"showLunar":true,"showBezel":true,"showGrain":true,"flashOnChange":true,"scene":"auto","animSpeed":"eink","quote":"Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.","timetable":{"0":[],"1":[],"2":[],"3":[],"4":[],"5":[],"6":[]}};</script>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header id="top-bar" class="top-bar">
+    <div class="top-bar-inner">
+      <div class="brand-wrap">
+        <span class="brand-logo">E</span>
+        <div>
+          <div class="brand-title">Lịch Để Bàn E-Ink</div>
+          <div class="brand-sub">GitHub Pages · Tương thích iPod Gen 5 (iOS 9)</div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button id="nav-display-btn" type="button" class="nav-btn">Hiển thị</button>
+        <button id="nav-admin-btn" type="button" class="nav-btn active">Admin</button>
+        <button id="btn-fullscreen" type="button" class="nav-btn hide-xs">Toàn màn hình</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- DISPLAY VIEW -->
+  <main id="view-display" class="display-main hidden">
+    <div id="display-desk-mount"><div class="eink-bezel"><div id="display-desk-mount-screen" data-eink-theme="tri-color" class="eink-screen eink-grain"><div class="eink-status-bar font-mono-eink"><span class="eink-status-left">E-INK DESK · BÀN LÀM VIỆC</span><span class="eink-status-right">HÔM NAY ● 100%</span></div><div class="eink-body"><div class="eink-col-left"><div class="clock-row"><div class="clock-digits font-mono-eink">10:31<span class="clock-sec"></span><span class="clock-suffix"></span></div><div class="date-meta"><div class="date-dow">Thứ Năm</div><div class="date-solar font-mono-eink">26/11/2026</div></div></div><div class="lunar-box"><div class="lunar-title">Âm lịch: 18/10</div><div class="lunar-sub">Năm Bính Ngọ · Ngày Giáp Thìn</div></div><div class="scene-box"><svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg"><line x1="16" y1="84" x2="244" y2="84" stroke="currentColor" stroke-width="2.5"></line><polygon points="96,68 164,68 156,84 104,84" fill="none" stroke="currentColor" stroke-width="2"></polygon><path d="M130 68 Q122 54 136 42 Q144 34 132 26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"></path><path d="M131 46 Q114 42 104 34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path><ellipse cx="135.9476952617564" cy="24" rx="28" ry="12" fill="currentColor"></ellipse><ellipse cx="103.9476952617564" cy="33" rx="18" ry="9" fill="currentColor"></ellipse><ellipse cx="159.9476952617564" cy="38" rx="16" ry="8" fill="currentColor"></ellipse><ellipse cx="178.8467200483592" cy="51" rx="3" ry="1.5" fill="var(--eink-accent)"></ellipse><ellipse cx="71.05003751699778" cy="52" rx="2.5" ry="1.5" fill="currentColor"></ellipse></svg></div><div class="tt-header"><span class="tt-header-left">Thời khóa biểu (T5)</span><span class="tt-header-right">2 mục</span></div><div class="tt-list"><div class="tt-item is-now"><div class="tt-time font-mono-eink">08:30–11:00</div><div class="tt-info"><div class="tt-title">▶ Mạng máy tính</div><div class="tt-note">Lab 201</div></div></div><div class="tt-item"><div class="tt-time font-mono-eink">15:00–17:00</div><div class="tt-info"><div class="tt-title">Làm bài tập lớn</div><div class="tt-note">Bàn làm việc</div></div></div></div></div><div class="eink-col-right"><div class="cal-top"><h2 class="cal-month-title">Tháng 11, 2026</h2><div class="cal-nav"><button type="button" data-cal-action="today" class="cal-btn">Hôm nay</button><button type="button" data-cal-action="prev" class="cal-btn" aria-label="Tháng trước">‹</button><button type="button" data-cal-action="next" class="cal-btn" aria-label="Tháng sau">›</button></div></div><table class="cal-table"><thead><tr><th class="">T2</th><th class="">T3</th><th class="">T4</th><th class="">T5</th><th class="">T6</th><th class="">T7</th><th class="is-sun">CN</th></tr></thead><tbody><tr><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td><button type="button" data-select-day="1" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">1</span><span class="cal-dot"></span><span class="cal-lunar-num">23</span></button></td></tr><tr><td><button type="button" data-select-day="2" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">2</span><span class="cal-dot"></span><span class="cal-lunar-num">24</span></button></td><td><button type="button" data-select-day="3" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">3</span><span class="cal-dot"></span><span class="cal-lunar-num">25</span></button></td><td><button type="button" data-select-day="4" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">4</span><span class="cal-dot"></span><span class="cal-lunar-num">26</span></button></td><td><button type="button" data-select-day="5" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">5</span><span class="cal-dot"></span><span class="cal-lunar-num">27</span></button></td><td><button type="button" data-select-day="6" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">6</span><span class="cal-dot"></span><span class="cal-lunar-num">28</span></button></td><td><button type="button" data-select-day="7" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">7</span><span class="cal-dot"></span><span class="cal-lunar-num">29</span></button></td><td><button type="button" data-select-day="8" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">8</span><span class="cal-dot"></span><span class="cal-lunar-num">30</span></button></td></tr><tr><td><button type="button" data-select-day="9" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">9</span><span class="cal-dot"></span><span class="cal-lunar-num is-special">1/10</span></button></td><td><button type="button" data-select-day="10" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">10</span><span class="cal-dot"></span><span class="cal-lunar-num">2</span></button></td><td><button type="button" data-select-day="11" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">11</span><span class="cal-dot"></span><span class="cal-lunar-num">3</span></button></td><td><button type="button" data-select-day="12" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">12</span><span class="cal-dot"></span><span class="cal-lunar-num">4</span></button></td><td><button type="button" data-select-day="13" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">13</span><span class="cal-dot"></span><span class="cal-lunar-num">5</span></button></td><td><button type="button" data-select-day="14" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">14</span><span class="cal-dot"></span><span class="cal-lunar-num">6</span></button></td><td><button type="button" data-select-day="15" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">15</span><span class="cal-dot"></span><span class="cal-lunar-num">7</span></button></td></tr><tr><td><button type="button" data-select-day="16" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">16</span><span class="cal-dot"></span><span class="cal-lunar-num">8</span></button></td><td><button type="button" data-select-day="17" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">17</span><span class="cal-dot"></span><span class="cal-lunar-num">9</span></button></td><td><button type="button" data-select-day="18" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">18</span><span class="cal-dot"></span><span class="cal-lunar-num">10</span></button></td><td><button type="button" data-select-day="19" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">19</span><span class="cal-dot"></span><span class="cal-lunar-num">11</span></button></td><td><button type="button" data-select-day="20" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">20</span><span class="cal-dot"></span><span class="cal-lunar-num">12</span></button></td><td><button type="button" data-select-day="21" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">21</span><span class="cal-dot"></span><span class="cal-lunar-num">13</span></button></td><td><button type="button" data-select-day="22" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">22</span><span class="cal-dot"></span><span class="cal-lunar-num">14</span></button></td></tr><tr><td><button type="button" data-select-day="23" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">23</span><span class="cal-dot"></span><span class="cal-lunar-num is-special">15</span></button></td><td><button type="button" data-select-day="24" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">24</span><span class="cal-dot"></span><span class="cal-lunar-num">16</span></button></td><td><button type="button" data-select-day="25" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">25</span><span class="cal-dot"></span><span class="cal-lunar-num">17</span></button></td><td><button type="button" data-select-day="26" class="cal-cell-btn is-selected"><span class="cal-solar-num font-mono-eink">26</span><span class="cal-dot"></span><span class="cal-lunar-num">18</span></button></td><td><button type="button" data-select-day="27" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">27</span><span class="cal-dot"></span><span class="cal-lunar-num">19</span></button></td><td><button type="button" data-select-day="28" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">28</span><span class="cal-dot"></span><span class="cal-lunar-num">20</span></button></td><td><button type="button" data-select-day="29" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">29</span><span class="cal-dot"></span><span class="cal-lunar-num">21</span></button></td></tr><tr><td><button type="button" data-select-day="30" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">30</span><span class="cal-dot"></span><span class="cal-lunar-num">22</span></button></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td></tr></tbody></table><div class="eink-footer"><span class="eink-quote">“Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.”</span><button type="button" data-go-admin="1" class="eink-admin-link">Cài đặt Admin</button></div></div></div></div></div></div>
+  </main>
+
+  <!-- ADMIN VIEW -->
+  <section id="view-admin" class="admin-wrap">
+    <div class="admin-layout">
+      <!-- Left: Settings Form -->
+      <div class="admin-left">
+        <div class="card">
+          <div class="card-head">
+            <div style="float:left;">
+              <div class="card-head-title">Cài đặt Lịch Để Bàn</div>
+              <div class="card-head-sub">Tự động lưu &amp; xem trước trực tiếp</div>
+            </div>
+            <button id="btn-flash-preview" type="button" class="btn-secondary" style="float:right;">Nháy E-Ink</button>
+          </div>
+
+          <div class="tabs-bar">
+            <button type="button" data-admin-tab="general" class="admin-tab-btn">Giao diện</button>
+            <button type="button" data-admin-tab="scene" class="admin-tab-btn">Hoạt cảnh</button>
+            <button type="button" data-admin-tab="timetable" class="admin-tab-btn">Thời khóa biểu</button>
+            <button type="button" data-admin-tab="github" class="admin-tab-btn active">Lưu &amp; GitHub</button>
+          </div>
+
+          <div class="admin-body">
+            <!-- Tab: General -->
+            <div id="tab-general" class="admin-tab-panel hidden">
+              <div class="field-group">
+                <label class="field-label" for="inp-title">Tiêu đề góc trên</label>
+                <input id="inp-title" type="text" class="inp" placeholder="VD: Bàn làm việc · E-Ink Desk">
+              </div>
+
+              <div class="field-group">
+                <span class="field-label">Chế độ màn hình E-Ink</span>
+                <div class="opt-grid" id="theme-selector">
+                  <div class="opt-col">
+                    <button type="button" data-theme="classic" class="opt-btn theme-opt">
+                      <div class="opt-title"><span class="swatch" style="background:#EAE8E1;"></span>Cổ điển</div>
+                      <div class="opt-sub">Giấy xám mực đen</div>
+                    </button>
+                  </div>
+                  <div class="opt-col">
+                    <button type="button" data-theme="tri-color" class="opt-btn theme-opt active">
+                      <div class="opt-title"><span class="swatch" style="background:#B91C1C;"></span>E-Ink 3 Màu</div>
+                      <div class="opt-sub">Đen + Trắng + Đỏ</div>
+                    </button>
+                  </div>
+                  <div class="opt-col">
+                    <button type="button" data-theme="warm" class="opt-btn theme-opt">
+                      <div class="opt-title"><span class="swatch" style="background:#F4ECD8;"></span>Giấy Ấm</div>
+                      <div class="opt-sub">Vàng ngà dịu mắt</div>
+                    </button>
+                  </div>
+                  <div class="opt-col">
+                    <button type="button" data-theme="dark" class="opt-btn theme-opt">
+                      <div class="opt-title"><span class="swatch" style="background:#171715;"></span>Dark E-Ink</div>
+                      <div class="opt-sub">Nền tối chữ sáng</div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="opt-grid">
+                <div class="opt-col">
+                  <label class="field-label" for="inp-time-format">Định dạng giờ</label>
+                  <select id="inp-time-format" class="inp">
+                    <option value="24h">24 giờ (14:30)</option>
+                    <option value="12h">12 giờ (02:30 PM)</option>
+                  </select>
+                </div>
+                <div class="opt-col">
+                  <label class="field-label" for="inp-week-start">Ngày đầu tuần</label>
+                  <select id="inp-week-start" class="inp">
+                    <option value="1">Thứ 2 (T2 → CN)</option>
+                    <option value="0">Chủ Nhật (CN → T7)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="chk-row"><span>Hiện giây trên đồng hồ</span><input id="chk-seconds" type="checkbox"></label>
+                <label class="chk-row"><span>Hiện Âm lịch &amp; Can Chi Việt Nam</span><input id="chk-lunar" type="checkbox"></label>
+                <label class="chk-row"><span>Khung viền máy E-Ink (Bezel)</span><input id="chk-bezel" type="checkbox"></label>
+                <label class="chk-row"><span>Hiệu ứng hạt giấy E-Ink (Grain)</span><input id="chk-grain" type="checkbox"></label>
+                <label class="chk-row"><span>Nháy E-Ink khi chuyển tháng</span><input id="chk-flash" type="checkbox"></label>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="inp-quote">Ghi chú / Châm ngôn chân trang</label>
+                <input id="inp-quote" type="text" class="inp" placeholder="VD: Làm ít lại, tập trung sâu hơn.">
+              </div>
+            </div>
+
+            <!-- Tab: Scene -->
+            <div id="tab-scene" class="admin-tab-panel hidden">
+              <div class="field-group">
+                <span class="field-label">Chọn hoạt cảnh (Vector E-Ink)</span>
+                <div class="opt-grid" id="scene-selector">
+                  <div class="opt-col">
+                    <button type="button" data-scene="auto" class="opt-btn scene-opt active">
+                      <div class="opt-title">Tự động theo giờ</div>
+                      <div class="opt-sub">Sáng / Chiều / Đêm</div>
+                    </button>
+                  </div>
+                  <div class="opt-col">
+                    <button type="button" data-scene="cat" class="opt-btn scene-opt">
+                      <div class="opt-title">Mèo &amp; Tách trà</div>
+                      <div class="opt-sub">Mèo ngủ, khói trà bay</div>
+                    </button>
+                  </div>
+                  <div class="opt-col">
+                    <button type="button" data-scene="rain" class="opt-btn scene-opt">
+                      <div class="opt-title">Cửa sổ mưa</div>
+                      <div class="opt-sub">Mưa rơi &amp; đèn bàn</div>
+                    </button>
+                  </div>
+                  <div class="opt-col">
+                    <button type="button" data-scene="mountain" class="opt-btn scene-opt">
+                      <div class="opt-title">Núi non Thiền</div>
+                      <div class="opt-sub">Mây trôi, chim bay</div>
+                    </button>
+                  </div>
+                  <div class="opt-col">
+                    <button type="button" data-scene="bonsai" class="opt-btn scene-opt">
+                      <div class="opt-title">Cây Bonsai</div>
+                      <div class="opt-sub">Lá rơi nhẹ nhàng</div>
+                    </button>
+                  </div>
+                  <div class="opt-col">
+                    <button type="button" data-scene="off" class="opt-btn scene-opt">
+                      <div class="opt-title">Tắt hoạt cảnh</div>
+                      <div class="opt-sub">Tối giản tuyệt đối</div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="inp-anim-speed">Nhịp độ chuyển động</label>
+                <select id="inp-anim-speed" class="inp">
+                  <option value="eink">Tiết kiệm pin E-Ink (2 khung hình/giây)</option>
+                  <option value="smooth">Mượt mà (8 khung hình/giây)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Tab: Timetable -->
+            <div id="tab-timetable" class="admin-tab-panel hidden">
+              <div style="overflow:hidden; margin-bottom:6px;">
+                <span class="field-label" style="float:left;">Chọn Thứ để chỉnh sửa</span>
+                <button id="btn-reset-timetable" type="button" style="float:right; border:0; background:transparent; color:#DC2626; font-size:11px; font-weight:700; cursor:pointer;">Khôi phục mẫu</button>
+              </div>
+              <div id="weekday-pills" style="margin-bottom:8px;"><button type="button" data-admin-day="1" class="pill-btn active">T2 (0)</button><button type="button" data-admin-day="2" class="pill-btn">T3 (0)</button><button type="button" data-admin-day="3" class="pill-btn">T4 (0)</button><button type="button" data-admin-day="4" class="pill-btn">T5 (0)</button><button type="button" data-admin-day="5" class="pill-btn">T6 (0)</button><button type="button" data-admin-day="6" class="pill-btn">T7 (0)</button><button type="button" data-admin-day="0" class="pill-btn">CN (0)</button></div>
+
+              <form id="form-add-tt" style="padding:10px; border:1px solid #E4E4E7; border-radius:9px; background:#FAFAFA; margin-bottom:10px;">
+                <div style="font-size:11px; font-weight:700; margin-bottom:6px;">Thêm mục mới</div>
+                <div class="opt-grid">
+                  <div class="opt-col">
+                    <label style="font-size:10px; color:#71717A;">Bắt đầu</label>
+                    <input id="tt-start" type="time" value="08:00" required="" class="inp">
+                  </div>
+                  <div class="opt-col">
+                    <label style="font-size:10px; color:#71717A;">Kết thúc</label>
+                    <input id="tt-end" type="time" value="09:30" required="" class="inp">
+                  </div>
+                </div>
+                <input id="tt-title" type="text" required="" placeholder="Tên môn học / công việc..." class="inp" style="margin-bottom:6px;">
+                <div style="overflow:hidden;">
+                  <input id="tt-note" type="text" placeholder="Phòng / ghi chú (tùy chọn)" class="inp" style="width:74%; float:left;">
+                  <button type="submit" class="btn-primary" style="width:24%; float:right;">Thêm</button>
+                </div>
+              </form>
+
+              <div id="tt-admin-list"><div style="font-size:11px; color:#A1A1AA; text-align:center; padding:14px;">Chưa có lịch trình cho Thứ Hai</div></div>
+            </div>
+
+            <!-- Tab: Save & GitHub -->
+            <div id="tab-github" class="admin-tab-panel">
+              <div style="padding:10px; border:1px solid #E4E4E7; border-radius:9px; background:#FAFAFA; margin-bottom:10px;">
+                <div style="font-size:12px; font-weight:700; margin-bottom:6px;">Đưa lên GitHub Pages &amp; iPod Gen 5</div>
+                <ol style="font-size:11px; color:#52525B; margin:0; padding-left:16px; line-height:1.5;">
+                  <li>Tạo repo trên GitHub, tải file <code>index.html</code> bên dưới và upload lên nhánh <code>main</code>.</li>
+                  <li>Bật <strong>Settings → Pages</strong> để lấy link web.</li>
+                  <li>Trên <strong>iPod Touch Gen 5 (Safari)</strong>, mở link → bấm nút Share → <strong>Add to Home Screen</strong> để chạy toàn màn hình như ứng dụng lịch để bàn.</li>
+                </ol>
+                <button id="btn-download-html" type="button" class="btn-primary" style="width:100%; margin-top:8px;">
+                  Tải file index.html (chứa cấu hình hiện tại)
+                </button>
+              </div>
+
+              <div class="opt-grid">
+                <div class="opt-col">
+                  <button id="btn-export-json" type="button" class="btn-secondary" style="width:100%;">Xuất JSON</button>
+                </div>
+                <div class="opt-col">
+                  <label class="btn-secondary" style="display:block; text-align:center;">
+                    Nhập JSON
+                    <input id="inp-import-json" type="file" accept="application/json" class="hidden">
+                  </label>
+                </div>
+              </div>
+
+              <button id="btn-copy-share-url" type="button" class="btn-secondary" style="width:100%;">
+                Sao chép Link kèm cấu hình (URL)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Live Preview -->
+      <div class="admin-right">
+        <div class="preview-bar">
+          <div style="float:left; font-size:11px; font-weight:700; line-height:24px;">
+            ● Xem trước trực tiếp
+          </div>
+          <div style="float:right;">
+            <button type="button" data-preview-size="desktop" class="preview-size-btn">Rộng</button>
+            <button type="button" data-preview-size="ipod-land" class="preview-size-btn active">iPod Ngang (568px)</button>
+            <button type="button" data-preview-size="ipod-port" class="preview-size-btn">iPod Dọc (320px)</button>
+            <button id="btn-open-display" type="button" class="preview-size-btn" style="background:#059669; color:#FFFFFF;">Mở toàn trang</button>
+          </div>
+        </div>
+
+        <div id="admin-preview-container" style="margin: 0px auto; width: 100%; max-width: 568px;" class="preview-ipod-land">
+          <div id="admin-desk-mount"><div class="eink-bezel"><div id="admin-desk-mount-screen" data-eink-theme="tri-color" class="eink-screen eink-grain"><div class="eink-status-bar font-mono-eink"><span class="eink-status-left">E-INK DESK · BÀN LÀM VIỆC</span><span class="eink-status-right">HÔM NAY ● 100%</span></div><div class="eink-body"><div class="eink-col-left"><div class="clock-row"><div class="clock-digits font-mono-eink">10:40<span class="clock-sec">:07</span><span class="clock-suffix"></span></div><div class="date-meta"><div class="date-dow">Thứ Năm</div><div class="date-solar font-mono-eink">26/11/2026</div></div></div><div class="lunar-box"><div class="lunar-title">Âm lịch: 18/10</div><div class="lunar-sub">Năm Bính Ngọ · Ngày Giáp Thìn</div></div><div class="scene-box"><svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg"><line x1="16" y1="84" x2="244" y2="84" stroke="currentColor" stroke-width="2.5"></line><polygon points="96,68 164,68 156,84 104,84" fill="none" stroke="currentColor" stroke-width="2"></polygon><path d="M130 68 Q122 54 136 42 Q144 34 132 26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"></path><path d="M131 46 Q114 42 104 34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path><ellipse cx="132.00620461222928" cy="24" rx="28" ry="12" fill="currentColor"></ellipse><ellipse cx="100.00620461222928" cy="33" rx="18" ry="9" fill="currentColor"></ellipse><ellipse cx="156.00620461222928" cy="38" rx="16" ry="8" fill="currentColor"></ellipse><ellipse cx="174.34544897232772" cy="79" rx="3" ry="1.5" fill="var(--eink-accent)"></ellipse><ellipse cx="72.03450150375669" cy="56" rx="2.5" ry="1.5" fill="currentColor"></ellipse></svg></div><div class="tt-header"><span class="tt-header-left">Thời khóa biểu (T5)</span><span class="tt-header-right">0 mục</span></div><div class="tt-list"><div style="font-size:11px; color:var(--eink-muted); text-align:center; padding:12px 6px; border:1px dashed var(--eink-border); border-radius:6px;">Không có lịch trình</div></div></div><div class="eink-col-right"><div class="cal-top"><h2 class="cal-month-title">Tháng 11, 2026</h2><div class="cal-nav"><button type="button" data-cal-action="today" class="cal-btn">Hôm nay</button><button type="button" data-cal-action="prev" class="cal-btn" aria-label="Tháng trước">‹</button><button type="button" data-cal-action="next" class="cal-btn" aria-label="Tháng sau">›</button></div></div><table class="cal-table"><thead><tr><th class="">T2</th><th class="">T3</th><th class="">T4</th><th class="">T5</th><th class="">T6</th><th class="">T7</th><th class="is-sun">CN</th></tr></thead><tbody><tr><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td><button type="button" data-select-day="1" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">1</span><span class="cal-lunar-num">23</span></button></td></tr><tr><td><button type="button" data-select-day="2" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">2</span><span class="cal-lunar-num">24</span></button></td><td><button type="button" data-select-day="3" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">3</span><span class="cal-lunar-num">25</span></button></td><td><button type="button" data-select-day="4" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">4</span><span class="cal-lunar-num">26</span></button></td><td><button type="button" data-select-day="5" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">5</span><span class="cal-lunar-num">27</span></button></td><td><button type="button" data-select-day="6" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">6</span><span class="cal-lunar-num">28</span></button></td><td><button type="button" data-select-day="7" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">7</span><span class="cal-lunar-num">29</span></button></td><td><button type="button" data-select-day="8" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">8</span><span class="cal-lunar-num">30</span></button></td></tr><tr><td><button type="button" data-select-day="9" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">9</span><span class="cal-lunar-num is-special">1/10</span></button></td><td><button type="button" data-select-day="10" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">10</span><span class="cal-lunar-num">2</span></button></td><td><button type="button" data-select-day="11" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">11</span><span class="cal-lunar-num">3</span></button></td><td><button type="button" data-select-day="12" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">12</span><span class="cal-lunar-num">4</span></button></td><td><button type="button" data-select-day="13" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">13</span><span class="cal-lunar-num">5</span></button></td><td><button type="button" data-select-day="14" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">14</span><span class="cal-lunar-num">6</span></button></td><td><button type="button" data-select-day="15" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">15</span><span class="cal-lunar-num">7</span></button></td></tr><tr><td><button type="button" data-select-day="16" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">16</span><span class="cal-lunar-num">8</span></button></td><td><button type="button" data-select-day="17" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">17</span><span class="cal-lunar-num">9</span></button></td><td><button type="button" data-select-day="18" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">18</span><span class="cal-lunar-num">10</span></button></td><td><button type="button" data-select-day="19" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">19</span><span class="cal-lunar-num">11</span></button></td><td><button type="button" data-select-day="20" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">20</span><span class="cal-lunar-num">12</span></button></td><td><button type="button" data-select-day="21" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">21</span><span class="cal-lunar-num">13</span></button></td><td><button type="button" data-select-day="22" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">22</span><span class="cal-lunar-num">14</span></button></td></tr><tr><td><button type="button" data-select-day="23" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">23</span><span class="cal-lunar-num is-special">15</span></button></td><td><button type="button" data-select-day="24" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">24</span><span class="cal-lunar-num">16</span></button></td><td><button type="button" data-select-day="25" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">25</span><span class="cal-lunar-num">17</span></button></td><td><button type="button" data-select-day="26" class="cal-cell-btn is-selected"><span class="cal-solar-num font-mono-eink">26</span><span class="cal-lunar-num">18</span></button></td><td><button type="button" data-select-day="27" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">27</span><span class="cal-lunar-num">19</span></button></td><td><button type="button" data-select-day="28" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">28</span><span class="cal-lunar-num">20</span></button></td><td><button type="button" data-select-day="29" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">29</span><span class="cal-lunar-num">21</span></button></td></tr><tr><td><button type="button" data-select-day="30" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">30</span><span class="cal-lunar-num">22</span></button></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td></tr></tbody></table><div class="eink-footer"><span class="eink-quote">“Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.”</span><span class="font-mono-eink" style="float:right; color:var(--eink-muted);">PREVIEW</span></div></div></div></div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="toast" class="toast hidden">Đã xóa mục khỏi thời khóa biểu</div>
+
+  <script>
+    // =========================================================================
+    // 1. VIETNAMESE LUNAR CALENDAR ALGORITHM (ES5 Compatible for iOS 9 Safari)
+    // =========================================================================
+    var PI = Math.PI;
+    function INT(d) { return Math.floor(d); }
+
+    function jdFromDate(dd, mm, yy) {
+      var a = INT((14 - mm) / 12);
+      var y = yy + 4800 - a;
+      var m = mm + 12 * a - 3;
+      var jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - INT(y / 100) + INT(y / 400) - 32045;
+      if (jd < 2299161) {
+        jd = dd + INT((153 * m + 2) / 5) + 365 * y + INT(y / 4) - 32083;
+      }
+      return jd;
+    }
+
+    function getNewMoonDay(k, timeZone) {
+      var T = k / 1236.85;
+      var T2 = T * T;
+      var T3 = T2 * T;
+      var dr = PI / 180;
+      var Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+      Jd1 = Jd1 + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+      var M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+      var Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+      var F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+      var C1 = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M);
+      C1 = C1 - 0.4068 * Math.sin(Mpr * dr) + 0.0161 * Math.sin(dr * 2 * Mpr);
+      C1 = C1 - 0.0004 * Math.sin(dr * 3 * Mpr);
+      C1 = C1 + 0.0104 * Math.sin(dr * 2 * F) - 0.0051 * Math.sin(dr * (M + Mpr));
+      C1 = C1 - 0.0074 * Math.sin(dr * (M - Mpr)) + 0.0004 * Math.sin(dr * (2 * F + M));
+      C1 = C1 - 0.0004 * Math.sin(dr * (2 * F - M)) - 0.0006 * Math.sin(dr * (2 * F + Mpr));
+      C1 = C1 + 0.0010 * Math.sin(dr * (2 * F - Mpr)) + 0.0005 * Math.sin(dr * (2 * Mpr + M));
+      var deltat;
+      if (T < -11) {
+        deltat = 0.001 + 0.000839 * T + 0.0002261 * T2 - 0.00000845 * T3 - 0.000000081 * T * T3;
+      } else {
+        deltat = -0.000278 + 0.000265 * T + 0.000262 * T2;
+      }
+      var JdNew = Jd1 + C1 - deltat;
+      return INT(JdNew + 0.5 + timeZone / 24);
+    }
+
+    function getSunLongitude(jdn, timeZone) {
+      var T = (jdn - 2451545.5 - timeZone / 24) / 36525;
+      var T2 = T * T;
+      var dr = PI / 180;
+      var M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
+      var L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+      var DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M);
+      DL = DL + (0.019993 - 0.000101 * T) * Math.sin(dr * 2 * M) + 0.000290 * Math.sin(dr * 3 * M);
+      var L = L0 + DL;
+      L = L * dr;
+      L = L - PI * 2 * (INT(L / (PI * 2)));
+      return INT(L / PI * 6);
+    }
+
+    function getLunarMonth11(yy, timeZone) {
+      var off = jdFromDate(31, 12, yy) - 2415021;
+      var k = INT(off / 29.530588853);
+      var nm = getNewMoonDay(k, timeZone);
+      var sunLong = getSunLongitude(nm, timeZone);
+      if (sunLong >= 9) {
+        nm = getNewMoonDay(k - 1, timeZone);
+      }
+      return nm;
+    }
+
+    function getLeapMonthOffset(a11, timeZone) {
+      var k = INT((a11 - 2415021.076998695) / 29.530588853 + 0.5);
+      var last = 0;
+      var i = 1;
+      var arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+      do {
+        last = arc;
+        i++;
+        arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+      } while (arc !== last && i < 14);
+      return i - 1;
+    }
+
+    function convertSolar2Lunar(dd, mm, yy, timeZone) {
+      if (typeof timeZone === "undefined") timeZone = 7;
+      var dayNumber = jdFromDate(dd, mm, yy);
+      var k = INT((dayNumber - 2415021.076998695) / 29.530588853);
+      var monthStart = getNewMoonDay(k + 1, timeZone);
+      if (monthStart > dayNumber) {
+        monthStart = getNewMoonDay(k, timeZone);
+      }
+      var a11 = getLunarMonth11(yy, timeZone);
+      var b11 = a11;
+      var lunarYear;
+      if (a11 >= monthStart) {
+        lunarYear = yy;
+        a11 = getLunarMonth11(yy - 1, timeZone);
+      } else {
+        lunarYear = yy + 1;
+        b11 = getLunarMonth11(yy + 1, timeZone);
+      }
+      var lunarDay = dayNumber - monthStart + 1;
+      var diff = INT((monthStart - a11) / 29);
+      var lunarLeap = 0;
+      var lunarMonth = diff + 11;
+      if (b11 - a11 > 365) {
+        var leapMonthDiff = getLeapMonthOffset(a11, timeZone);
+        if (diff >= leapMonthDiff) {
+          lunarMonth = diff + 10;
+          if (diff === leapMonthDiff) {
+            lunarLeap = 1;
+          }
+        }
+      }
+      if (lunarMonth > 12) lunarMonth = lunarMonth - 12;
+      if (lunarMonth >= 11 && diff < 4) lunarYear -= 1;
+      return { day: lunarDay, month: lunarMonth, year: lunarYear, leap: lunarLeap, jd: dayNumber };
+    }
+
+    var CAN = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
+    var CHI = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+
+    function getCanChiYear(lunarYear) {
+      return CAN[(lunarYear + 6) % 10] + " " + CHI[(lunarYear + 8) % 12];
+    }
+
+    function getCanChiDay(jd) {
+      return CAN[(jd + 9) % 10] + " " + CHI[(jd + 1) % 12];
+    }
+
+    function getHolidayLabel(dd, mm, lunar) {
+      var sKey = dd + "/" + mm;
+      var lKey = lunar.day + "/" + lunar.month;
+      var solarHolidays = {
+        "1/1": "Tết Dương lịch",
+        "30/4": "Giải phóng miền Nam",
+        "1/5": "Quốc tế Lao động",
+        "2/9": "Quốc khánh",
+        "20/11": "Ngày Nhà giáo VN"
+      };
+      var lunarHolidays = {
+        "1/1": "Mùng 1 Tết Nguyên Đán",
+        "2/1": "Mùng 2 Tết",
+        "3/1": "Mùng 3 Tết",
+        "15/1": "Rằm tháng Giêng",
+        "10/3": "Giỗ Tổ Hùng Vương",
+        "15/4": "Lễ Phật Đản",
+        "5/5": "Tết Đoan Ngọ",
+        "15/7": "Lễ Vu Lan",
+        "15/8": "Tết Trung Thu",
+        "23/12": "Ông Công Ông Táo"
+      };
+      if (!lunar.leap && lunarHolidays[lKey]) return lunarHolidays[lKey];
+      if (solarHolidays[sKey]) return solarHolidays[sKey];
+      if (lunar.day === 1) return "Mùng 1 Âm lịch";
+      if (lunar.day === 15) return "Ngày Rằm";
+      return "";
+    }
+
+    // =========================================================================
+    // 2. HELPERS & STATE (ES5)
+    // =========================================================================
+    function pad2(n) {
+      return n < 10 ? "0" + n : "" + n;
+    }
+
+    function findAttrEl(el, attrName) {
+      while (el && el !== document) {
+        if (el.getAttribute && el.getAttribute(attrName) !== null) return el;
+        el = el.parentNode;
+      }
+      return null;
+    }
+
+    function getQueryParam(name) {
+      var search = window.location.search || "";
+      if (!search) return null;
+      var pairs = search.substring(1).split("&");
+      for (var i = 0; i < pairs.length; i++) {
+        var kv = pairs[i].split("=");
+        if (decodeURIComponent(kv[0]) === name) {
+          return kv.length > 1 ? decodeURIComponent(kv[1]) : "";
+        }
+      }
+      return null;
+    }
+
+    function cloneObj(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function extendObj(base, extra) {
+      var res = {};
+      var k;
+      for (k in base) { if (base.hasOwnProperty(k)) res[k] = base[k]; }
+      for (k in extra) { if (extra.hasOwnProperty(k)) res[k] = extra[k]; }
+      return res;
+    }
+
+    var STORAGE_KEY = "eink_desk_calendar_v1";
+
+    var DEFAULT_TIMETABLE = {
+      1: [
+        { id: "m1", start: "07:30", end: "09:00", title: "Toán cao cấp A1", note: "Phòng B204" },
+        { id: "m2", start: "09:15", end: "11:30", title: "Lập trình Web", note: "Lab 302" },
+        { id: "m3", start: "14:00", end: "16:30", title: "Đọc tài liệu & Deep Work", note: "Thư viện" },
+        { id: "m4", start: "19:30", end: "21:00", title: "Ôn tập Tiếng Anh", note: "Ở nhà" }
+      ],
+      2: [
+        { id: "t1", start: "08:00", end: "10:00", title: "Cơ sở dữ liệu", note: "Phòng A105" },
+        { id: "t2", start: "13:30", end: "15:30", title: "Họp nhóm dự án", note: "Online / Zoom" },
+        { id: "t3", start: "17:30", end: "18:30", title: "Chạy bộ công viên", note: "Thể thao" }
+      ],
+      3: [
+        { id: "w1", start: "07:30", end: "10:00", title: "Kỹ thuật phần mềm", note: "Phòng C102" },
+        { id: "w2", start: "14:00", end: "16:00", title: "Thiết kế giao diện UI", note: "Studio" },
+        { id: "w3", start: "20:00", end: "21:30", title: "Đọc sách công nghệ", note: "Ở nhà" }
+      ],
+      4: [
+        { id: "th1", start: "08:30", end: "11:00", title: "Mạng máy tính", note: "Lab 201" },
+        { id: "th2", start: "15:00", end: "17:00", title: "Làm bài tập lớn", note: "Bàn làm việc" }
+      ],
+      5: [
+        { id: "f1", start: "08:00", end: "11:00", title: "Thực hành Hệ điều hành", note: "Lab 305" },
+        { id: "f2", start: "14:30", end: "16:30", title: "Tổng kết tuần", note: "Notion" },
+        { id: "f3", start: "19:00", end: "21:00", title: "Cà phê cùng bạn bè", note: "Quận 1" }
+      ],
+      6: [
+        { id: "sa1", start: "09:00", end: "11:30", title: "Dự án cá nhân (GitHub)", note: "E-Ink Calendar" },
+        { id: "sa2", start: "15:00", end: "17:00", title: "Dọn dẹp & mua sắm", note: "Cuối tuần" }
+      ],
+      0: [
+        { id: "su1", start: "08:30", end: "10:00", title: "Cà phê sáng & đọc báo", note: "Thư giãn" },
+        { id: "su2", start: "19:30", end: "21:00", title: "Lên kế hoạch tuần mới", note: "Sổ tay" }
+      ]
+    };
+
+    var DEFAULT_CONFIG = {
+      title: "E-INK DESK · BÀN LÀM VIỆC",
+      theme: "tri-color",
+      timeFormat: "24h",
+      weekStart: 1,
+      showSeconds: false,
+      showLunar: true,
+      showBezel: true,
+      showGrain: true,
+      flashOnChange: true,
+      scene: "auto",
+      animSpeed: "eink",
+      quote: "Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.",
+      timetable: cloneObj(DEFAULT_TIMETABLE)
+    };
+
+    var config = loadConfig();
+    var currentRoute = window.location.hash === "#admin" ? "admin" : "display";
+    var selectedDate = new Date();
+    var viewMonth = selectedDate.getMonth();
+    var viewYear = selectedDate.getFullYear();
+    var adminActiveDay = new Date().getDay();
+    var previewSize = "desktop";
+    var sceneTick = 0;
+    var sceneTimer = null;
+
+    function mergeConfig(incoming) {
+      var merged = extendObj(DEFAULT_CONFIG, incoming || {});
+      if (!merged.timetable || typeof merged.timetable !== "object") {
+        merged.timetable = cloneObj(DEFAULT_TIMETABLE);
+      }
+      return merged;
+    }
+
+    function loadConfig() {
+      try {
+        var cfgParam = getQueryParam("cfg");
+        if (cfgParam) {
+          var decoded = JSON.parse(decodeURIComponent(escape(atob(cfgParam))));
+          return mergeConfig(decoded);
+        }
+      } catch (e) {}
+      if (window.__PRELOADED_CONFIG__) {
+        return mergeConfig(window.__PRELOADED_CONFIG__);
+      }
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return mergeConfig(JSON.parse(raw));
+      } catch (e) {}
+      return cloneObj(DEFAULT_CONFIG);
+    }
+
+    function saveConfig() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+      } catch (e) {}
+    }
+
+    var toastTimer = null;
+    function showToast(msg) {
+      var el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = "toast";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        el.className = "toast hidden";
+      }, 2600);
+    }
+
+    // =========================================================================
+    // 3. ANIMATED E-INK SCENES (ES5)
+    // =========================================================================
+    function resolveSceneName(now) {
+      if (config.scene !== "auto") return config.scene;
+      var h = now.getHours();
+      if (h >= 6 && h < 12) return "bonsai";
+      if (h >= 12 && h < 18) return "mountain";
+      return "cat";
+    }
+
+    function renderSceneSVG(now, tick) {
+      var name = resolveSceneName(now);
+      if (name === "off") return "";
+      var h = now.getHours();
+      var isNight = h >= 18 || h < 6;
+
+      if (name === "cat") {
+        var steamOffset = (tick % 4) * 2;
+        var tailSwing = Math.sin(tick * 0.7) * 5;
+        var eyeClosed = tick % 9 !== 0;
+        var winSky = isNight
+          ? '<circle cx="56" cy="24" r="6" fill="currentColor"/><circle cx="59" cy="22" r="5" fill="var(--eink-surface)"/><circle cx="26" cy="20" r="1.2" fill="currentColor"/><circle cx="34" cy="29" r="1" fill="currentColor"/>'
+          : '<circle cx="28" cy="23" r="6" fill="currentColor"/>';
+        var catEye = eyeClosed
+          ? '<path d="M108 61 Q111 63 114 61" stroke="var(--eink-surface)" stroke-width="1.5" fill="none"/>'
+          : '<circle cx="111" cy="60" r="1.5" fill="var(--eink-surface)"/>';
+        return '' +
+          '<svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg">' +
+            '<rect x="14" y="10" width="58" height="54" fill="none" stroke="currentColor" stroke-width="2"/>' +
+            '<line x1="43" y1="10" x2="43" y2="64" stroke="currentColor" stroke-width="1.5"/>' +
+            '<line x1="14" y1="37" x2="72" y2="37" stroke="currentColor" stroke-width="1.5"/>' +
+            winSky +
+            '<line x1="8" y1="78" x2="252" y2="78" stroke="currentColor" stroke-width="2.5"/>' +
+            '<ellipse cx="135" cy="68" rx="26" ry="11" fill="currentColor"/>' +
+            '<circle cx="114" cy="61" r="10" fill="currentColor"/>' +
+            '<polygon points="106,54 109,44 114,52" fill="currentColor"/>' +
+            '<polygon points="116,52 121,44 124,54" fill="currentColor"/>' +
+            catEye +
+            '<path d="M160 70 Q176 ' + (66 + tailSwing) + ' 182 ' + (56 + tailSwing) + '" stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none"/>' +
+            '<rect x="202" y="60" width="20" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>' +
+            '<path d="M222 64 C228 64 228 73 222 73" fill="none" stroke="currentColor" stroke-width="2"/>' +
+            '<path d="M208 ' + (54 - steamOffset) + ' Q205 47 209 40" stroke="currentColor" stroke-width="1.5" fill="none"/>' +
+            '<path d="M216 ' + (52 - ((tick + 2) % 4) * 2) + ' Q219 45 215 38" stroke="currentColor" stroke-width="1.5" fill="none"/>' +
+            '<text x="86" y="26" font-size="9" font-family="monospace" fill="currentColor" opacity="0.7">' + (tick % 2 === 0 ? "zZz..." : "zZ...") + '</text>' +
+          '</svg>';
+      }
+
+      if (name === "rain") {
+        var drops = "";
+        for (var i = 0; i < 14; i++) {
+          var x = 22 + ((i * 17) % 130);
+          var y = 14 + (((i * 23) + tick * 11) % 58);
+          drops += '<line x1="' + x + '" y1="' + y + '" x2="' + (x - 3) + '" y2="' + (y + 7) + '" stroke="currentColor" stroke-width="1.4"/>';
+        }
+        return '' +
+          '<svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg">' +
+            '<rect x="16" y="8" width="140" height="72" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>' +
+            '<line x1="86" y1="8" x2="86" y2="80" stroke="currentColor" stroke-width="1.5"/>' +
+            drops +
+            '<line x1="6" y1="82" x2="254" y2="82" stroke="currentColor" stroke-width="2.5"/>' +
+            '<rect x="195" y="76" width="28" height="5" fill="currentColor"/>' +
+            '<path d="M209 76 L218 46 L196 34" fill="none" stroke="currentColor" stroke-width="2.5"/>' +
+            '<polygon points="184,38 202,26 206,42" fill="currentColor"/>' +
+            '<line x1="186" y1="45" x2="178" y2="62" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="' + (tick % 2 === 0 ? 0.7 : 0.4) + '"/>' +
+            '<line x1="196" y1="46" x2="193" y2="65" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="' + (tick % 2 === 0 ? 0.4 : 0.7) + '"/>' +
+          '</svg>';
+      }
+
+      if (name === "mountain") {
+        var cloudX = (tick * 6) % 240;
+        var birdY = 22 + Math.sin(tick * 0.8) * 3;
+        var birdX = 40 + ((tick * 8) % 180);
+        return '' +
+          '<svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg">' +
+            '<circle cx="208" cy="26" r="12" fill="var(--eink-accent)"/>' +
+            '<g transform="translate(' + (cloudX - 30) + ', 16)">' +
+              '<path d="M10 14 Q14 6 22 8 Q28 2 36 8 Q44 8 44 14 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
+            '</g>' +
+            '<path d="M' + birdX + ' ' + birdY + ' Q' + (birdX + 4) + ' ' + (birdY - 4) + ' ' + (birdX + 8) + ' ' + birdY + ' Q' + (birdX + 12) + ' ' + (birdY - 4) + ' ' + (birdX + 16) + ' ' + birdY + '" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
+            '<polygon points="10,84 70,34 132,84" fill="var(--eink-surface)" stroke="currentColor" stroke-width="2"/>' +
+            '<polygon points="92,84 156,28 228,84" fill="currentColor" opacity="0.88"/>' +
+            '<polygon points="168,84 214,48 254,84" fill="var(--eink-surface)" stroke="currentColor" stroke-width="2"/>' +
+            '<line x1="4" y1="84" x2="256" y2="84" stroke="currentColor" stroke-width="2"/>' +
+          '</svg>';
+      }
+
+      var leafY1 = 36 + ((tick * 5) % 44);
+      var leafY2 = 28 + (((tick + 3) * 4) % 52);
+      var sway = Math.sin(tick * 0.6) * 2;
+      return '' +
+        '<svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg">' +
+          '<line x1="16" y1="84" x2="244" y2="84" stroke="currentColor" stroke-width="2.5"/>' +
+          '<polygon points="96,68 164,68 156,84 104,84" fill="none" stroke="currentColor" stroke-width="2"/>' +
+          '<path d="M130 68 Q122 54 136 42 Q144 34 132 26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>' +
+          '<path d="M131 46 Q114 42 104 34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>' +
+          '<ellipse cx="' + (134 + sway) + '" cy="24" rx="28" ry="12" fill="currentColor"/>' +
+          '<ellipse cx="' + (102 + sway) + '" cy="33" rx="18" ry="9" fill="currentColor"/>' +
+          '<ellipse cx="' + (158 + sway) + '" cy="38" rx="16" ry="8" fill="currentColor"/>' +
+          '<ellipse cx="' + (178 + Math.sin(tick) * 6) + '" cy="' + leafY1 + '" rx="3" ry="1.5" fill="var(--eink-accent)"/>' +
+          '<ellipse cx="' + (76 + Math.cos(tick) * 5) + '" cy="' + leafY2 + '" rx="2.5" ry="1.5" fill="currentColor"/>' +
+        '</svg>';
+    }
+
+    // =========================================================================
+    // 4. RENDER E-INK DESK CALENDAR
+    // =========================================================================
+    var WEEKDAYS_FULL = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+    var WEEKDAYS_SHORT = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function formatClock(now) {
+      var h = now.getHours();
+      var m = pad2(now.getMinutes());
+      var s = pad2(now.getSeconds());
+      var suffix = "";
+      if (config.timeFormat === "12h") {
+        suffix = h >= 12 ? " PM" : " AM";
+        h = h % 12 || 12;
+      }
+      return {
+        main: pad2(h) + ":" + m,
+        sec: config.showSeconds ? ":" + s : "",
+        suffix: suffix
+      };
+    }
+
+    function parseTimeToMinutes(str) {
+      var parts = (str || "00:00").split(":");
+      return (Number(parts[0]) || 0) * 60 + (Number(parts[1]) || 0);
+    }
+
+    function buildDeskHTML(mountId, isPreview) {
+      var now = new Date();
+      var clock = formatClock(now);
+      var selD = selectedDate.getDate();
+      var selM = selectedDate.getMonth() + 1;
+      var selY = selectedDate.getFullYear();
+      var selDow = selectedDate.getDay();
+      var isSelectedToday = (selD === now.getDate() && selM === (now.getMonth() + 1) && selY === now.getFullYear());
+
+      var lunar = convertSolar2Lunar(selD, selM, selY, 7);
+      var holiday = getHolidayLabel(selD, selM, lunar);
+      var dayItems = (config.timetable[selDow] || []).slice().sort(function (a, b) {
+        return a.start < b.start ? -1 : (a.start > b.start ? 1 : 0);
+      });
+      var nowMins = now.getHours() * 60 + now.getMinutes();
+
+      // Month Grid
+      var firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay();
+      var daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+      var startOffset = (firstDayOfMonth - Number(config.weekStart) + 7) % 7;
+
+      var headerOrder = Number(config.weekStart) === 1
+        ? [1, 2, 3, 4, 5, 6, 0]
+        : [0, 1, 2, 3, 4, 5, 6];
+
+      var calHeadersHTML = "";
+      for (var hi = 0; hi < headerOrder.length; hi++) {
+        var wd = headerOrder[hi];
+        calHeadersHTML += '<th class="' + (wd === 0 ? 'is-sun' : '') + '">' + WEEKDAYS_SHORT[wd] + '</th>';
+      }
+
+      var calRowsHTML = "<tr>";
+      var cellCount = 0;
+      for (var i = 0; i < startOffset; i++) {
+        calRowsHTML += '<td style="opacity:0.2;"></td>';
+        cellCount++;
+      }
+
+      for (var day = 1; day <= daysInMonth; day++) {
+        if (cellCount > 0 && cellCount % 7 === 0) {
+          calRowsHTML += "</tr><tr>";
+        }
+        var cellDate = new Date(viewYear, viewMonth, day);
+        var dow = cellDate.getDay();
+        var isToday = (day === now.getDate() && viewMonth === now.getMonth() && viewYear === now.getFullYear());
+        var isSel = (day === selD && viewMonth === (selM - 1) && viewYear === selY);
+        var cLunar = convertSolar2Lunar(day, viewMonth + 1, viewYear, 7);
+        var hasSchedule = (config.timetable[dow] || []).length > 0;
+        var isSpecialLunar = (cLunar.day === 1 || cLunar.day === 15);
+        var lunarText = cLunar.day === 1 ? (cLunar.day + "/" + cLunar.month) : ("" + cLunar.day);
+
+        var btnClass = "cal-cell-btn";
+        if (isSel) btnClass += " is-selected";
+        else if (isToday) btnClass += " is-today";
+
+        var solarSpecial = (!isSel && (dow === 0 || isSpecialLunar)) ? " is-special" : "";
+        var lunarSpecial = (isSpecialLunar && !isSel) ? " is-special" : "";
+
+        calRowsHTML +=
+          '<td>' +
+            '<button type="button" data-select-day="' + day + '" class="' + btnClass + '">' +
+              '<span class="cal-solar-num font-mono-eink' + solarSpecial + '">' + day + '</span>' +
+              (hasSchedule ? '<span class="cal-dot"></span>' : '') +
+              (config.showLunar ? '<span class="cal-lunar-num' + lunarSpecial + '">' + lunarText + (cLunar.leap ? '*' : '') + '</span>' : '') +
+            '</button>' +
+          '</td>';
+        cellCount++;
+      }
+
+      while (cellCount % 7 !== 0) {
+        calRowsHTML += '<td style="opacity:0.2;"></td>';
+        cellCount++;
+      }
+      calRowsHTML += "</tr>";
+
+      var sceneHTML = renderSceneSVG(now, sceneTick);
+
+      var timetableHTML = "";
+      if (dayItems.length === 0) {
+        timetableHTML = '<div style="font-size:11px; color:var(--eink-muted); text-align:center; padding:12px 6px; border:1px dashed var(--eink-border); border-radius:6px;">Không có lịch trình</div>';
+      } else {
+        for (var ti = 0; ti < dayItems.length; ti++) {
+          var item = dayItems[ti];
+          var sMin = parseTimeToMinutes(item.start);
+          var eMin = parseTimeToMinutes(item.end);
+          var isNow = isSelectedToday && nowMins >= sMin && nowMins <= eMin;
+          var isPast = isSelectedToday && nowMins > eMin;
+          var itemCls = "tt-item" + (isNow ? " is-now" : (isPast ? " is-past" : ""));
+          timetableHTML +=
+            '<div class="' + itemCls + '">' +
+              '<div class="tt-time font-mono-eink">' + item.start + '–' + item.end + '</div>' +
+              '<div class="tt-info">' +
+                '<div class="tt-title">' + (isNow ? '▶ ' : '') + escapeHtml(item.title) + '</div>' +
+                (item.note ? '<div class="tt-note">' + escapeHtml(item.note) + '</div>' : '') +
+              '</div>' +
+            '</div>';
+        }
+      }
+
+      var screenClass = "eink-screen" + (config.showGrain ? " eink-grain" : "");
+
+      var html =
+        '<div class="' + (config.showBezel ? 'eink-bezel' : '') + '">' +
+          '<div id="' + mountId + '-screen" data-eink-theme="' + config.theme + '" class="' + screenClass + '">' +
+            '<div class="eink-status-bar font-mono-eink">' +
+              '<span class="eink-status-left">' + escapeHtml(config.title || "E-INK DESK") + '</span>' +
+              '<span class="eink-status-right">' + (isSelectedToday ? "HÔM NAY" : "ĐANG XEM") + ' ● 100%</span>' +
+            '</div>' +
+            '<div class="eink-body">' +
+              '<div class="eink-col-left">' +
+                '<div class="clock-row">' +
+                  '<div class="clock-digits font-mono-eink">' +
+                    clock.main + '<span class="clock-sec">' + clock.sec + '</span><span class="clock-suffix">' + clock.suffix + '</span>' +
+                  '</div>' +
+                  '<div class="date-meta">' +
+                    '<div class="date-dow">' + WEEKDAYS_FULL[selDow] + '</div>' +
+                    '<div class="date-solar font-mono-eink">' + pad2(selD) + '/' + pad2(selM) + '/' + selY + '</div>' +
+                  '</div>' +
+                '</div>' +
+                (config.showLunar ? (
+                  '<div class="lunar-box">' +
+                    '<div class="lunar-title">Âm lịch: ' + lunar.day + '/' + lunar.month + (lunar.leap ? ' (Nhuận)' : '') + '</div>' +
+                    '<div class="lunar-sub">Năm ' + getCanChiYear(lunar.year) + ' · Ngày ' + getCanChiDay(lunar.jd) + '</div>' +
+                    (holiday ? '<span class="holiday-badge">' + escapeHtml(holiday) + '</span>' : '') +
+                  '</div>'
+                ) : '') +
+                (sceneHTML ? '<div class="scene-box">' + sceneHTML + '</div>' : '') +
+                '<div class="tt-header">' +
+                  '<span class="tt-header-left">Thời khóa biểu (' + WEEKDAYS_SHORT[selDow] + ')</span>' +
+                  '<span class="tt-header-right">' + dayItems.length + ' mục</span>' +
+                '</div>' +
+                '<div class="tt-list">' + timetableHTML + '</div>' +
+              '</div>' +
+              '<div class="eink-col-right">' +
+                '<div class="cal-top">' +
+                  '<h2 class="cal-month-title">Tháng ' + (viewMonth + 1) + ', ' + viewYear + '</h2>' +
+                  '<div class="cal-nav">' +
+                    '<button type="button" data-cal-action="today" class="cal-btn">Hôm nay</button>' +
+                    '<button type="button" data-cal-action="prev" class="cal-btn" aria-label="Tháng trước">‹</button>' +
+                    '<button type="button" data-cal-action="next" class="cal-btn" aria-label="Tháng sau">›</button>' +
+                  '</div>' +
+                '</div>' +
+                '<table class="cal-table">' +
+                  '<thead><tr>' + calHeadersHTML + '</tr></thead>' +
+                  '<tbody>' + calRowsHTML + '</tbody>' +
+                '</table>' +
+                '<div class="eink-footer">' +
+                  '<span class="eink-quote">“' + escapeHtml(config.quote || "") + '”</span>' +
+                  (!isPreview
+                    ? '<button type="button" data-go-admin="1" class="eink-admin-link">Cài đặt Admin</button>'
+                    : '<span class="font-mono-eink" style="float:right; color:var(--eink-muted);">PREVIEW</span>') +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      var mount = document.getElementById(mountId);
+      if (mount) mount.innerHTML = html;
+    }
+
+    function triggerEinkFlash(mountId) {
+      if (!config.flashOnChange) return;
+      var el = document.getElementById(mountId + "-screen");
+      if (!el) return;
+      el.className = el.className.replace(" eink-flashing", "");
+      void el.offsetWidth;
+      el.className += " eink-flashing";
+    }
+
+    function renderAllDisplays() {
+      if (currentRoute === "display") {
+        buildDeskHTML("display-desk-mount", false);
+      } else {
+        buildDeskHTML("admin-desk-mount", true);
+      }
+    }
+
+    // =========================================================================
+    // 5. EVENT DELEGATION FOR CALENDAR
+    // =========================================================================
+    function handleDeskClick(e, mountId) {
+      var target = e.target || e.srcElement;
+      var dayBtn = findAttrEl(target, "data-select-day");
+      if (dayBtn) {
+        var day = Number(dayBtn.getAttribute("data-select-day"));
+        selectedDate = new Date(viewYear, viewMonth, day);
+        renderAllDisplays();
+        return;
+      }
+
+      var calBtn = findAttrEl(target, "data-cal-action");
+      if (calBtn) {
+        var act = calBtn.getAttribute("data-cal-action");
+        if (act === "prev") {
+          viewMonth--;
+          if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+        } else if (act === "next") {
+          viewMonth++;
+          if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+        } else if (act === "today") {
+          var now = new Date();
+          selectedDate = now;
+          viewMonth = now.getMonth();
+          viewYear = now.getFullYear();
+        }
+        renderAllDisplays();
+        triggerEinkFlash(mountId);
+        return;
+      }
+
+      if (findAttrEl(target, "data-go-admin")) {
+        switchRoute("admin");
+      }
+    }
+
+    document.getElementById("display-desk-mount").addEventListener("click", function (e) { handleDeskClick(e, "display-desk-mount"); });
+    document.getElementById("admin-desk-mount").addEventListener("click", function (e) { handleDeskClick(e, "admin-desk-mount"); });
+
+    // =========================================================================
+    // 6. ROUTING & FULLSCREEN
+    // =========================================================================
+    function switchRoute(route) {
+      currentRoute = route;
+      window.location.hash = route === "admin" ? "#admin" : "#display";
+      var disp = document.getElementById("view-display");
+      var adm = document.getElementById("view-admin");
+      var btnD = document.getElementById("nav-display-btn");
+      var btnA = document.getElementById("nav-admin-btn");
+
+      if (route === "admin") {
+        disp.className = "display-main hidden";
+        adm.className = "admin-wrap";
+        btnA.className = "nav-btn active";
+        btnD.className = "nav-btn";
+        syncAdminInputs();
+      } else {
+        adm.className = "admin-wrap hidden";
+        disp.className = "display-main";
+        btnD.className = "nav-btn active";
+        btnA.className = "nav-btn";
+      }
+      renderAllDisplays();
+    }
+
+    document.getElementById("nav-display-btn").addEventListener("click", function () { switchRoute("display"); });
+    document.getElementById("nav-admin-btn").addEventListener("click", function () { switchRoute("admin"); });
+    document.getElementById("btn-open-display").addEventListener("click", function () { switchRoute("display"); });
+
+    document.getElementById("btn-fullscreen").addEventListener("click", function () {
+      var docEl = document.documentElement;
+      var req = docEl.requestFullscreen || docEl.webkitRequestFullscreen;
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (currentRoute !== "display") switchRoute("display");
+        if (req) {
+          try { req.call(docEl); } catch (e) { showToast("Trình duyệt không hỗ trợ toàn màn hình."); }
+        } else {
+          showToast("Trên iPod/iOS, hãy dùng Share → Add to Home Screen để mở toàn màn hình.");
+        }
+      } else {
+        var exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document);
+      }
+    });
+
+    document.addEventListener("fullscreenchange", function () {
+      var topBar = document.getElementById("top-bar");
+      topBar.className = document.fullscreenElement ? "top-bar hidden" : "top-bar";
+    });
+
+    // =========================================================================
+    // 7. ADMIN PANEL LOGIC (ES5)
+    // =========================================================================
+    function syncAdminInputs() {
+      document.getElementById("inp-title").value = config.title;
+      document.getElementById("inp-time-format").value = config.timeFormat;
+      document.getElementById("inp-week-start").value = String(config.weekStart);
+      document.getElementById("chk-seconds").checked = config.showSeconds;
+      document.getElementById("chk-lunar").checked = config.showLunar;
+      document.getElementById("chk-bezel").checked = config.showBezel;
+      document.getElementById("chk-grain").checked = config.showGrain;
+      document.getElementById("chk-flash").checked = config.flashOnChange;
+      document.getElementById("inp-quote").value = config.quote;
+      document.getElementById("inp-anim-speed").value = config.animSpeed;
+
+      var themeBtns = document.querySelectorAll(".theme-opt");
+      for (var i = 0; i < themeBtns.length; i++) {
+        var tb = themeBtns[i];
+        tb.className = "opt-btn theme-opt" + (tb.getAttribute("data-theme") === config.theme ? " active" : "");
+      }
+
+      var sceneBtns = document.querySelectorAll(".scene-opt");
+      for (var j = 0; j < sceneBtns.length; j++) {
+        var sb = sceneBtns[j];
+        sb.className = "opt-btn scene-opt" + (sb.getAttribute("data-scene") === config.scene ? " active" : "");
+      }
+
+      renderWeekdayPills();
+      renderAdminTimetableList();
+    }
+
+    var tabBtns = document.querySelectorAll(".admin-tab-btn");
+    for (var ti = 0; ti < tabBtns.length; ti++) {
+      tabBtns[ti].addEventListener("click", function () {
+        var tab = this.getAttribute("data-admin-tab");
+        for (var k = 0; k < tabBtns.length; k++) {
+          tabBtns[k].className = "admin-tab-btn" + (tabBtns[k] === this ? " active" : "");
+        }
+        var panels = document.querySelectorAll(".admin-tab-panel");
+        for (var p = 0; p < panels.length; p++) {
+          panels[p].className = "admin-tab-panel" + (panels[p].id !== ("tab-" + tab) ? " hidden" : "");
+        }
+      });
+    }
+
+    document.getElementById("inp-title").addEventListener("input", function (e) {
+      config.title = e.target.value;
+      saveConfig(); renderAllDisplays();
+    });
+    document.getElementById("inp-quote").addEventListener("input", function (e) {
+      config.quote = e.target.value;
+      saveConfig(); renderAllDisplays();
+    });
+    document.getElementById("inp-time-format").addEventListener("change", function (e) {
+      config.timeFormat = e.target.value;
+      saveConfig(); renderAllDisplays();
+    });
+    document.getElementById("inp-week-start").addEventListener("change", function (e) {
+      config.weekStart = Number(e.target.value);
+      saveConfig(); renderAllDisplays();
+    });
+
+    var chkMap = [
+      ["chk-seconds", "showSeconds"],
+      ["chk-lunar", "showLunar"],
+      ["chk-bezel", "showBezel"],
+      ["chk-grain", "showGrain"],
+      ["chk-flash", "flashOnChange"]
+    ];
+    for (var ci = 0; ci < chkMap.length; ci++) {
+      (function (id, key) {
+        document.getElementById(id).addEventListener("change", function (e) {
+          config[key] = e.target.checked;
+          saveConfig(); renderAllDisplays();
+        });
+      })(chkMap[ci][0], chkMap[ci][1]);
+    }
+
+    document.getElementById("theme-selector").addEventListener("click", function (e) {
+      var btn = findAttrEl(e.target || e.srcElement, "data-theme");
+      if (!btn) return;
+      config.theme = btn.getAttribute("data-theme");
+      saveConfig(); syncAdminInputs(); renderAllDisplays();
+      triggerEinkFlash("admin-desk-mount");
+    });
+
+    document.getElementById("scene-selector").addEventListener("click", function (e) {
+      var btn = findAttrEl(e.target || e.srcElement, "data-scene");
+      if (!btn) return;
+      config.scene = btn.getAttribute("data-scene");
+      saveConfig(); syncAdminInputs(); renderAllDisplays();
+    });
+
+    document.getElementById("inp-anim-speed").addEventListener("change", function (e) {
+      config.animSpeed = e.target.value;
+      saveConfig();
+      restartSceneTimer();
+    });
+
+    document.getElementById("btn-flash-preview").addEventListener("click", function () {
+      triggerEinkFlash("admin-desk-mount");
+    });
+
+    var pSizeBtns = document.querySelectorAll(".preview-size-btn[data-preview-size]");
+    for (var pi = 0; pi < pSizeBtns.length; pi++) {
+      pSizeBtns[pi].addEventListener("click", function () {
+        previewSize = this.getAttribute("data-preview-size");
+        for (var k = 0; k < pSizeBtns.length; k++) {
+          pSizeBtns[k].className = "preview-size-btn" + (pSizeBtns[k] === this ? " active" : "");
+        }
+        var container = document.getElementById("admin-preview-container");
+        if (previewSize === "ipod-land") {
+          container.style.maxWidth = "568px";
+          container.className = "preview-ipod-land";
+        } else if (previewSize === "ipod-port") {
+          container.style.maxWidth = "320px";
+          container.className = "preview-ipod-port";
+        } else {
+          container.style.maxWidth = "100%";
+          container.className = "";
+        }
+        renderAllDisplays();
+      });
+    }
+
+    function renderWeekdayPills() {
+      var order = [1, 2, 3, 4, 5, 6, 0];
+      var wrap = document.getElementById("weekday-pills");
+      var out = "";
+      for (var i = 0; i < order.length; i++) {
+        var d = order[i];
+        var active = d === adminActiveDay;
+        var count = (config.timetable[d] || []).length;
+        out += '<button type="button" data-admin-day="' + d + '" class="pill-btn' + (active ? ' active' : '') + '">' + WEEKDAYS_SHORT[d] + ' (' + count + ')</button>';
+      }
+      wrap.innerHTML = out;
+    }
+
+    document.getElementById("weekday-pills").addEventListener("click", function (e) {
+      var btn = findAttrEl(e.target || e.srcElement, "data-admin-day");
+      if (!btn) return;
+      adminActiveDay = Number(btn.getAttribute("data-admin-day"));
+      renderWeekdayPills();
+      renderAdminTimetableList();
+    });
+
+    function renderAdminTimetableList() {
+      var items = (config.timetable[adminActiveDay] || []).slice().sort(function (a, b) {
+        return a.start < b.start ? -1 : (a.start > b.start ? 1 : 0);
+      });
+      var list = document.getElementById("tt-admin-list");
+      if (items.length === 0) {
+        list.innerHTML = '<div style="font-size:11px; color:#A1A1AA; text-align:center; padding:14px;">Chưa có lịch trình cho ' + WEEKDAYS_FULL[adminActiveDay] + '</div>';
+        return;
+      }
+      var out = "";
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        out +=
+          '<div class="tt-admin-item">' +
+            '<button type="button" data-del-tt="' + item.id + '" class="tt-admin-del">Xóa</button>' +
+            '<div style="font-size:12px; font-weight:700;">' + escapeHtml(item.title) + '</div>' +
+            '<div style="font-size:11px; color:#71717A;" class="font-mono-eink">' + item.start + ' – ' + item.end + (item.note ? ' · ' + escapeHtml(item.note) : '') + '</div>' +
+          '</div>';
+      }
+      list.innerHTML = out;
+    }
+
+    document.getElementById("tt-admin-list").addEventListener("click", function (e) {
+      var btn = findAttrEl(e.target || e.srcElement, "data-del-tt");
+      if (!btn) return;
+      var id = btn.getAttribute("data-del-tt");
+      var cur = config.timetable[adminActiveDay] || [];
+      var next = [];
+      for (var i = 0; i < cur.length; i++) {
+        if (cur[i].id !== id) next.push(cur[i]);
+      }
+      config.timetable[adminActiveDay] = next;
+      saveConfig();
+      renderWeekdayPills();
+      renderAdminTimetableList();
+      renderAllDisplays();
+      showToast("Đã xóa mục khỏi thời khóa biểu");
+    });
+
+    document.getElementById("form-add-tt").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var start = document.getElementById("tt-start").value;
+      var end = document.getElementById("tt-end").value;
+      var title = document.getElementById("tt-title").value.replace(/^\s+|\s+$/g, "");
+      var note = document.getElementById("tt-note").value.replace(/^\s+|\s+$/g, "");
+      if (!title) return;
+      if (!config.timetable[adminActiveDay]) config.timetable[adminActiveDay] = [];
+      config.timetable[adminActiveDay].push({
+        id: "tt_" + (new Date().getTime()),
+        start: start,
+        end: end,
+        title: title,
+        note: note
+      });
+      document.getElementById("tt-title").value = "";
+      document.getElementById("tt-note").value = "";
+      saveConfig();
+      renderWeekdayPills();
+      renderAdminTimetableList();
+      renderAllDisplays();
+      showToast("Đã thêm vào " + WEEKDAYS_FULL[adminActiveDay]);
+    });
+
+    document.getElementById("btn-reset-timetable").addEventListener("click", function () {
+      config.timetable = cloneObj(DEFAULT_TIMETABLE);
+      saveConfig();
+      renderWeekdayPills();
+      renderAdminTimetableList();
+      renderAllDisplays();
+      showToast("Đã khôi phục thời khóa biểu mẫu");
+    });
+
+    document.getElementById("btn-export-json").addEventListener("click", function () {
+      var blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "eink-calendar-config.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Đã tải file cấu hình JSON");
+    });
+
+    document.getElementById("inp-import-json").addEventListener("change", function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          var parsed = JSON.parse(reader.result);
+          config = mergeConfig(parsed);
+          saveConfig();
+          syncAdminInputs();
+          renderAllDisplays();
+          showToast("Đã nhập cấu hình thành công!");
+        } catch (err) {
+          showToast("File JSON không hợp lệ.");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById("btn-copy-share-url").addEventListener("click", function () {
+      try {
+        var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(config))));
+        var base = window.location.href.split("?")[0].split("#")[0];
+        var shareUrl = base + "?cfg=" + encoded + "#display";
+        var ta = document.createElement("textarea");
+        ta.value = shareUrl;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast("Đã sao chép link cấu hình!");
+      } catch (e) {
+        showToast("Không thể tạo link chia sẻ.");
+      }
+    });
+
+    document.getElementById("btn-download-html").addEventListener("click", function () {
+      var cfgScript = "<script>window.__PRELOADED_CONFIG__ = " + JSON.stringify(config) + ";<\/script>";
+      var html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      html = html.replace("</head>", cfgScript + "\n</head>");
+      var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "index.html";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Đã tải index.html sẵn sàng up lên GitHub Pages!");
+    });
+
+    // =========================================================================
+    // 8. TIMERS & INIT
+    // =========================================================================
+    function restartSceneTimer() {
+      if (sceneTimer) clearInterval(sceneTimer);
+      var intervalMs = config.animSpeed === "smooth" ? 150 : 500;
+      sceneTimer = setInterval(function () {
+        sceneTick++;
+        renderAllDisplays();
+      }, intervalMs);
+    }
+
+    switchRoute(currentRoute);
+    restartSceneTimer();
+  </script>
+
+
+</body></html>
