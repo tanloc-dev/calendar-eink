@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Lịch E-Ink" />
-  <title>Lịch Để Bàn E-Ink — Âm Lịch & Thời Khóa Biểu</title>
+<html lang="vi"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lịch E-Ink">
+  <title>Lịch Để Bàn E-Ink — Âm Lịch &amp; Thời Khóa Biểu</title>
   <style>
     :root {
       --eink-bg: #EAE8E1;
@@ -775,6 +774,7 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     }
   </style>
+<script>window.__PRELOADED_CONFIG__ = {"title":"E-INK DESK · BÀN LÀM VIỆC","theme":"tri-color","timeFormat":"24h","weekStart":1,"showSeconds":false,"showLunar":true,"showBezel":true,"showGrain":true,"flashOnChange":true,"keepAwake":true,"scene":"auto","animSpeed":"eink","quote":"Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.","timetable":{"0":[],"1":[],"2":[],"3":[],"4":[],"5":[],"6":[]}};</script>
 </head>
 <body>
 
@@ -790,20 +790,20 @@
       </div>
 
       <div class="nav-actions">
-        <button id="nav-display-btn" type="button" class="nav-btn active">Hiển thị</button>
-        <button id="nav-admin-btn" type="button" class="nav-btn">Admin</button>
+        <button id="nav-display-btn" type="button" class="nav-btn">Hiển thị</button>
+        <button id="nav-admin-btn" type="button" class="nav-btn active">Admin</button>
         <button id="btn-fullscreen" type="button" class="nav-btn hide-xs">Toàn màn hình</button>
       </div>
     </div>
   </header>
 
   <!-- DISPLAY VIEW -->
-  <main id="view-display" class="display-main">
-    <div id="display-desk-mount"></div>
+  <main id="view-display" class="display-main hidden">
+    <div id="display-desk-mount"><div class="eink-bezel"><div id="display-desk-mount-screen" data-eink-theme="tri-color" class="eink-screen eink-grain"><div class="eink-status-bar font-mono-eink"><span class="eink-status-left">E-INK DESK · BÀN LÀM VIỆC</span><span class="eink-status-right">HÔM NAY · <button type="button" data-toggle-awake="1" style="border:0;background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;">☀ LUÔN SÁNG</button></span></div><div class="eink-body"><div class="eink-col-left"><div class="clock-row"><div class="clock-digits font-mono-eink">11:02<span class="clock-sec"></span><span class="clock-suffix"></span></div><div class="date-meta"><div class="date-dow">Thứ Năm</div><div class="date-solar font-mono-eink">26/11/2026</div></div></div><div class="lunar-box"><div class="lunar-title">Âm lịch: 18/10</div><div class="lunar-sub">Năm Bính Ngọ · Ngày Giáp Thìn</div></div><div class="scene-box"><svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg"><line x1="16" y1="84" x2="244" y2="84" stroke="currentColor" stroke-width="2.5"></line><polygon points="96,68 164,68 156,84 104,84" fill="none" stroke="currentColor" stroke-width="2"></polygon><path d="M130 68 Q122 54 136 42 Q144 34 132 26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"></path><path d="M131 46 Q114 42 104 34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path><ellipse cx="133.44116900360214" cy="24" rx="28" ry="12" fill="currentColor"></ellipse><ellipse cx="101.44116900360214" cy="33" rx="18" ry="9" fill="currentColor"></ellipse><ellipse cx="157.44116900360214" cy="38" rx="16" ry="8" fill="currentColor"></ellipse><ellipse cx="174.73587333466378" cy="42" rx="3" ry="1.5" fill="var(--eink-accent)"></ellipse><ellipse cx="71.80464235461774" cy="28" rx="2.5" ry="1.5" fill="currentColor"></ellipse></svg></div><div class="tt-header"><span class="tt-header-left">Thời khóa biểu (T5)</span><span class="tt-header-right">2 mục</span></div><div class="tt-list"><div class="tt-item is-past"><div class="tt-time font-mono-eink">08:30–11:00</div><div class="tt-info"><div class="tt-title">Mạng máy tính</div><div class="tt-note">Lab 201</div></div></div><div class="tt-item"><div class="tt-time font-mono-eink">15:00–17:00</div><div class="tt-info"><div class="tt-title">Làm bài tập lớn</div><div class="tt-note">Bàn làm việc</div></div></div></div></div><div class="eink-col-right"><div class="cal-top"><h2 class="cal-month-title">Tháng 11, 2026</h2><div class="cal-nav"><button type="button" data-cal-action="today" class="cal-btn">Hôm nay</button><button type="button" data-cal-action="prev" class="cal-btn" aria-label="Tháng trước">‹</button><button type="button" data-cal-action="next" class="cal-btn" aria-label="Tháng sau">›</button></div></div><table class="cal-table"><thead><tr><th class="">T2</th><th class="">T3</th><th class="">T4</th><th class="">T5</th><th class="">T6</th><th class="">T7</th><th class="is-sun">CN</th></tr></thead><tbody><tr><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td><button type="button" data-select-day="1" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">1</span><span class="cal-dot"></span><span class="cal-lunar-num">23</span></button></td></tr><tr><td><button type="button" data-select-day="2" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">2</span><span class="cal-dot"></span><span class="cal-lunar-num">24</span></button></td><td><button type="button" data-select-day="3" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">3</span><span class="cal-dot"></span><span class="cal-lunar-num">25</span></button></td><td><button type="button" data-select-day="4" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">4</span><span class="cal-dot"></span><span class="cal-lunar-num">26</span></button></td><td><button type="button" data-select-day="5" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">5</span><span class="cal-dot"></span><span class="cal-lunar-num">27</span></button></td><td><button type="button" data-select-day="6" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">6</span><span class="cal-dot"></span><span class="cal-lunar-num">28</span></button></td><td><button type="button" data-select-day="7" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">7</span><span class="cal-dot"></span><span class="cal-lunar-num">29</span></button></td><td><button type="button" data-select-day="8" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">8</span><span class="cal-dot"></span><span class="cal-lunar-num">30</span></button></td></tr><tr><td><button type="button" data-select-day="9" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">9</span><span class="cal-dot"></span><span class="cal-lunar-num is-special">1/10</span></button></td><td><button type="button" data-select-day="10" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">10</span><span class="cal-dot"></span><span class="cal-lunar-num">2</span></button></td><td><button type="button" data-select-day="11" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">11</span><span class="cal-dot"></span><span class="cal-lunar-num">3</span></button></td><td><button type="button" data-select-day="12" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">12</span><span class="cal-dot"></span><span class="cal-lunar-num">4</span></button></td><td><button type="button" data-select-day="13" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">13</span><span class="cal-dot"></span><span class="cal-lunar-num">5</span></button></td><td><button type="button" data-select-day="14" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">14</span><span class="cal-dot"></span><span class="cal-lunar-num">6</span></button></td><td><button type="button" data-select-day="15" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">15</span><span class="cal-dot"></span><span class="cal-lunar-num">7</span></button></td></tr><tr><td><button type="button" data-select-day="16" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">16</span><span class="cal-dot"></span><span class="cal-lunar-num">8</span></button></td><td><button type="button" data-select-day="17" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">17</span><span class="cal-dot"></span><span class="cal-lunar-num">9</span></button></td><td><button type="button" data-select-day="18" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">18</span><span class="cal-dot"></span><span class="cal-lunar-num">10</span></button></td><td><button type="button" data-select-day="19" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">19</span><span class="cal-dot"></span><span class="cal-lunar-num">11</span></button></td><td><button type="button" data-select-day="20" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">20</span><span class="cal-dot"></span><span class="cal-lunar-num">12</span></button></td><td><button type="button" data-select-day="21" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">21</span><span class="cal-dot"></span><span class="cal-lunar-num">13</span></button></td><td><button type="button" data-select-day="22" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">22</span><span class="cal-dot"></span><span class="cal-lunar-num">14</span></button></td></tr><tr><td><button type="button" data-select-day="23" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">23</span><span class="cal-dot"></span><span class="cal-lunar-num is-special">15</span></button></td><td><button type="button" data-select-day="24" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">24</span><span class="cal-dot"></span><span class="cal-lunar-num">16</span></button></td><td><button type="button" data-select-day="25" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">25</span><span class="cal-dot"></span><span class="cal-lunar-num">17</span></button></td><td><button type="button" data-select-day="26" class="cal-cell-btn is-selected"><span class="cal-solar-num font-mono-eink">26</span><span class="cal-dot"></span><span class="cal-lunar-num">18</span></button></td><td><button type="button" data-select-day="27" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">27</span><span class="cal-dot"></span><span class="cal-lunar-num">19</span></button></td><td><button type="button" data-select-day="28" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">28</span><span class="cal-dot"></span><span class="cal-lunar-num">20</span></button></td><td><button type="button" data-select-day="29" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">29</span><span class="cal-dot"></span><span class="cal-lunar-num">21</span></button></td></tr><tr><td><button type="button" data-select-day="30" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">30</span><span class="cal-dot"></span><span class="cal-lunar-num">22</span></button></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td></tr></tbody></table><div class="eink-footer"><span class="eink-quote">“Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.”</span><button type="button" data-go-admin="1" class="eink-admin-link">Cài đặt Admin</button></div></div></div></div></div></div>
   </main>
 
   <!-- ADMIN VIEW -->
-  <section id="view-admin" class="admin-wrap hidden">
+  <section id="view-admin" class="admin-wrap">
     <div class="admin-layout">
       <!-- Left: Settings Form -->
       <div class="admin-left">
@@ -817,18 +817,18 @@
           </div>
 
           <div class="tabs-bar">
-            <button type="button" data-admin-tab="general" class="admin-tab-btn active">Giao diện</button>
+            <button type="button" data-admin-tab="general" class="admin-tab-btn">Giao diện</button>
             <button type="button" data-admin-tab="scene" class="admin-tab-btn">Hoạt cảnh</button>
             <button type="button" data-admin-tab="timetable" class="admin-tab-btn">Thời khóa biểu</button>
-            <button type="button" data-admin-tab="github" class="admin-tab-btn">Lưu &amp; GitHub</button>
+            <button type="button" data-admin-tab="github" class="admin-tab-btn active">Lưu &amp; GitHub</button>
           </div>
 
           <div class="admin-body">
             <!-- Tab: General -->
-            <div id="tab-general" class="admin-tab-panel">
+            <div id="tab-general" class="admin-tab-panel hidden">
               <div class="field-group">
                 <label class="field-label" for="inp-title">Tiêu đề góc trên</label>
-                <input id="inp-title" type="text" class="inp" placeholder="VD: Bàn làm việc · E-Ink Desk" />
+                <input id="inp-title" type="text" class="inp" placeholder="VD: Bàn làm việc · E-Ink Desk">
               </div>
 
               <div class="field-group">
@@ -841,7 +841,7 @@
                     </button>
                   </div>
                   <div class="opt-col">
-                    <button type="button" data-theme="tri-color" class="opt-btn theme-opt">
+                    <button type="button" data-theme="tri-color" class="opt-btn theme-opt active">
                       <div class="opt-title"><span class="swatch" style="background:#B91C1C;"></span>E-Ink 3 Màu</div>
                       <div class="opt-sub">Đen + Trắng + Đỏ</div>
                     </button>
@@ -879,17 +879,17 @@
               </div>
 
               <div class="field-group">
-                <label class="chk-row"><span>Hiện giây trên đồng hồ</span><input id="chk-seconds" type="checkbox" /></label>
-                <label class="chk-row"><span>Hiện Âm lịch &amp; Can Chi Việt Nam</span><input id="chk-lunar" type="checkbox" /></label>
-                <label class="chk-row"><span>Khung viền máy E-Ink (Bezel)</span><input id="chk-bezel" type="checkbox" /></label>
-                <label class="chk-row"><span>Hiệu ứng hạt giấy E-Ink (Grain)</span><input id="chk-grain" type="checkbox" /></label>
-                <label class="chk-row"><span>Nháy E-Ink khi chuyển tháng</span><input id="chk-flash" type="checkbox" /></label>
-                <label class="chk-row"><span>Giữ màn hình luôn sáng (Wake Lock)</span><input id="chk-awake" type="checkbox" /></label>
+                <label class="chk-row"><span>Hiện giây trên đồng hồ</span><input id="chk-seconds" type="checkbox"></label>
+                <label class="chk-row"><span>Hiện Âm lịch &amp; Can Chi Việt Nam</span><input id="chk-lunar" type="checkbox"></label>
+                <label class="chk-row"><span>Khung viền máy E-Ink (Bezel)</span><input id="chk-bezel" type="checkbox"></label>
+                <label class="chk-row"><span>Hiệu ứng hạt giấy E-Ink (Grain)</span><input id="chk-grain" type="checkbox"></label>
+                <label class="chk-row"><span>Nháy E-Ink khi chuyển tháng</span><input id="chk-flash" type="checkbox"></label>
+                <label class="chk-row"><span>Giữ màn hình luôn sáng (Wake Lock)</span><input id="chk-awake" type="checkbox"></label>
               </div>
 
               <div class="field-group">
                 <label class="field-label" for="inp-quote">Ghi chú / Châm ngôn chân trang</label>
-                <input id="inp-quote" type="text" class="inp" placeholder="VD: Làm ít lại, tập trung sâu hơn." />
+                <input id="inp-quote" type="text" class="inp" placeholder="VD: Làm ít lại, tập trung sâu hơn.">
               </div>
             </div>
 
@@ -899,7 +899,7 @@
                 <span class="field-label">Chọn hoạt cảnh (Vector E-Ink)</span>
                 <div class="opt-grid" id="scene-selector">
                   <div class="opt-col">
-                    <button type="button" data-scene="auto" class="opt-btn scene-opt">
+                    <button type="button" data-scene="auto" class="opt-btn scene-opt active">
                       <div class="opt-title">Tự động theo giờ</div>
                       <div class="opt-sub">Sáng / Chiều / Đêm</div>
                     </button>
@@ -952,32 +952,32 @@
                 <span class="field-label" style="float:left;">Chọn Thứ để chỉnh sửa</span>
                 <button id="btn-reset-timetable" type="button" style="float:right; border:0; background:transparent; color:#DC2626; font-size:11px; font-weight:700; cursor:pointer;">Khôi phục mẫu</button>
               </div>
-              <div id="weekday-pills" style="margin-bottom:8px;"></div>
+              <div id="weekday-pills" style="margin-bottom:8px;"><button type="button" data-admin-day="1" class="pill-btn">T2 (0)</button><button type="button" data-admin-day="2" class="pill-btn">T3 (0)</button><button type="button" data-admin-day="3" class="pill-btn">T4 (0)</button><button type="button" data-admin-day="4" class="pill-btn">T5 (0)</button><button type="button" data-admin-day="5" class="pill-btn">T6 (0)</button><button type="button" data-admin-day="6" class="pill-btn">T7 (0)</button><button type="button" data-admin-day="0" class="pill-btn active">CN (0)</button></div>
 
               <form id="form-add-tt" style="padding:10px; border:1px solid #E4E4E7; border-radius:9px; background:#FAFAFA; margin-bottom:10px;">
                 <div style="font-size:11px; font-weight:700; margin-bottom:6px;">Thêm mục mới</div>
                 <div class="opt-grid">
                   <div class="opt-col">
                     <label style="font-size:10px; color:#71717A;">Bắt đầu</label>
-                    <input id="tt-start" type="time" value="08:00" required class="inp" />
+                    <input id="tt-start" type="time" value="08:00" required="" class="inp">
                   </div>
                   <div class="opt-col">
                     <label style="font-size:10px; color:#71717A;">Kết thúc</label>
-                    <input id="tt-end" type="time" value="09:30" required class="inp" />
+                    <input id="tt-end" type="time" value="09:30" required="" class="inp">
                   </div>
                 </div>
-                <input id="tt-title" type="text" required placeholder="Tên môn học / công việc..." class="inp" style="margin-bottom:6px;" />
+                <input id="tt-title" type="text" required="" placeholder="Tên môn học / công việc..." class="inp" style="margin-bottom:6px;">
                 <div style="overflow:hidden;">
-                  <input id="tt-note" type="text" placeholder="Phòng / ghi chú (tùy chọn)" class="inp" style="width:74%; float:left;" />
+                  <input id="tt-note" type="text" placeholder="Phòng / ghi chú (tùy chọn)" class="inp" style="width:74%; float:left;">
                   <button type="submit" class="btn-primary" style="width:24%; float:right;">Thêm</button>
                 </div>
               </form>
 
-              <div id="tt-admin-list"></div>
+              <div id="tt-admin-list"><div style="font-size:11px; color:#A1A1AA; text-align:center; padding:14px;">Chưa có lịch trình cho Chủ Nhật</div></div>
             </div>
 
             <!-- Tab: Save & GitHub -->
-            <div id="tab-github" class="admin-tab-panel hidden">
+            <div id="tab-github" class="admin-tab-panel">
               <div style="padding:10px; border:1px solid #E4E4E7; border-radius:9px; background:#FAFAFA; margin-bottom:10px;">
                 <div style="font-size:12px; font-weight:700; margin-bottom:6px;">Đưa lên GitHub Pages &amp; iPod Gen 5</div>
                 <ol style="font-size:11px; color:#52525B; margin:0; padding-left:16px; line-height:1.5;">
@@ -997,7 +997,7 @@
                 <div class="opt-col">
                   <label class="btn-secondary" style="display:block; text-align:center;">
                     Nhập JSON
-                    <input id="inp-import-json" type="file" accept="application/json" class="hidden" />
+                    <input id="inp-import-json" type="file" accept="application/json" class="hidden">
                   </label>
                 </div>
               </div>
@@ -1017,21 +1017,21 @@
             ● Xem trước trực tiếp
           </div>
           <div style="float:right;">
-            <button type="button" data-preview-size="desktop" class="preview-size-btn active">Rộng</button>
-            <button type="button" data-preview-size="ipod-land" class="preview-size-btn">iPod Ngang (568px)</button>
+            <button type="button" data-preview-size="desktop" class="preview-size-btn">Rộng</button>
+            <button type="button" data-preview-size="ipod-land" class="preview-size-btn active">iPod Ngang (568px)</button>
             <button type="button" data-preview-size="ipod-port" class="preview-size-btn">iPod Dọc (320px)</button>
             <button id="btn-open-display" type="button" class="preview-size-btn" style="background:#059669; color:#FFFFFF;">Mở toàn trang</button>
           </div>
         </div>
 
-        <div id="admin-preview-container" style="margin:0 auto; width:100%;">
-          <div id="admin-desk-mount"></div>
+        <div id="admin-preview-container" style="margin: 0px auto; width: 100%; max-width: 568px;" class="preview-ipod-land">
+          <div id="admin-desk-mount"><div class="eink-bezel"><div id="admin-desk-mount-screen" data-eink-theme="tri-color" class="eink-screen eink-grain"><div class="eink-status-bar font-mono-eink"><span class="eink-status-left">E-INK DESK · BÀN LÀM VIỆC</span><span class="eink-status-right">HÔM NAY · <button type="button" data-toggle-awake="1" style="border:0;background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;">☀ LUÔN SÁNG</button></span></div><div class="eink-body"><div class="eink-col-left"><div class="clock-row"><div class="clock-digits font-mono-eink">11:04<span class="clock-sec"></span><span class="clock-suffix"></span></div><div class="date-meta"><div class="date-dow">Thứ Năm</div><div class="date-solar font-mono-eink">26/11/2026</div></div></div><div class="lunar-box"><div class="lunar-title">Âm lịch: 18/10</div><div class="lunar-sub">Năm Bính Ngọ · Ngày Giáp Thìn</div></div><div class="scene-box"><svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg"><line x1="16" y1="84" x2="244" y2="84" stroke="currentColor" stroke-width="2.5"></line><polygon points="96,68 164,68 156,84 104,84" fill="none" stroke="currentColor" stroke-width="2"></polygon><path d="M130 68 Q122 54 136 42 Q144 34 132 26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"></path><path d="M131 46 Q114 42 104 34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path><ellipse cx="134.176737372208" cy="24" rx="28" ry="12" fill="currentColor"></ellipse><ellipse cx="102.17673737220801" cy="33" rx="18" ry="9" fill="currentColor"></ellipse><ellipse cx="158.176737372208" cy="38" rx="16" ry="8" fill="currentColor"></ellipse><ellipse cx="172.41943073197285" cy="61" rx="3" ry="1.5" fill="var(--eink-accent)"></ellipse><ellipse cx="77.83659683865123" cy="56" rx="2.5" ry="1.5" fill="currentColor"></ellipse></svg></div><div class="tt-header"><span class="tt-header-left">Thời khóa biểu (T5)</span><span class="tt-header-right">0 mục</span></div><div class="tt-list"><div style="font-size:11px; color:var(--eink-muted); text-align:center; padding:12px 6px; border:1px dashed var(--eink-border); border-radius:6px;">Không có lịch trình</div></div></div><div class="eink-col-right"><div class="cal-top"><h2 class="cal-month-title">Tháng 11, 2026</h2><div class="cal-nav"><button type="button" data-cal-action="today" class="cal-btn">Hôm nay</button><button type="button" data-cal-action="prev" class="cal-btn" aria-label="Tháng trước">‹</button><button type="button" data-cal-action="next" class="cal-btn" aria-label="Tháng sau">›</button></div></div><table class="cal-table"><thead><tr><th class="">T2</th><th class="">T3</th><th class="">T4</th><th class="">T5</th><th class="">T6</th><th class="">T7</th><th class="is-sun">CN</th></tr></thead><tbody><tr><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td><button type="button" data-select-day="1" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">1</span><span class="cal-lunar-num">23</span></button></td></tr><tr><td><button type="button" data-select-day="2" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">2</span><span class="cal-lunar-num">24</span></button></td><td><button type="button" data-select-day="3" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">3</span><span class="cal-lunar-num">25</span></button></td><td><button type="button" data-select-day="4" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">4</span><span class="cal-lunar-num">26</span></button></td><td><button type="button" data-select-day="5" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">5</span><span class="cal-lunar-num">27</span></button></td><td><button type="button" data-select-day="6" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">6</span><span class="cal-lunar-num">28</span></button></td><td><button type="button" data-select-day="7" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">7</span><span class="cal-lunar-num">29</span></button></td><td><button type="button" data-select-day="8" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">8</span><span class="cal-lunar-num">30</span></button></td></tr><tr><td><button type="button" data-select-day="9" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">9</span><span class="cal-lunar-num is-special">1/10</span></button></td><td><button type="button" data-select-day="10" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">10</span><span class="cal-lunar-num">2</span></button></td><td><button type="button" data-select-day="11" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">11</span><span class="cal-lunar-num">3</span></button></td><td><button type="button" data-select-day="12" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">12</span><span class="cal-lunar-num">4</span></button></td><td><button type="button" data-select-day="13" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">13</span><span class="cal-lunar-num">5</span></button></td><td><button type="button" data-select-day="14" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">14</span><span class="cal-lunar-num">6</span></button></td><td><button type="button" data-select-day="15" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">15</span><span class="cal-lunar-num">7</span></button></td></tr><tr><td><button type="button" data-select-day="16" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">16</span><span class="cal-lunar-num">8</span></button></td><td><button type="button" data-select-day="17" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">17</span><span class="cal-lunar-num">9</span></button></td><td><button type="button" data-select-day="18" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">18</span><span class="cal-lunar-num">10</span></button></td><td><button type="button" data-select-day="19" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">19</span><span class="cal-lunar-num">11</span></button></td><td><button type="button" data-select-day="20" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">20</span><span class="cal-lunar-num">12</span></button></td><td><button type="button" data-select-day="21" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">21</span><span class="cal-lunar-num">13</span></button></td><td><button type="button" data-select-day="22" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">22</span><span class="cal-lunar-num">14</span></button></td></tr><tr><td><button type="button" data-select-day="23" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">23</span><span class="cal-lunar-num is-special">15</span></button></td><td><button type="button" data-select-day="24" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">24</span><span class="cal-lunar-num">16</span></button></td><td><button type="button" data-select-day="25" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">25</span><span class="cal-lunar-num">17</span></button></td><td><button type="button" data-select-day="26" class="cal-cell-btn is-selected"><span class="cal-solar-num font-mono-eink">26</span><span class="cal-lunar-num">18</span></button></td><td><button type="button" data-select-day="27" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">27</span><span class="cal-lunar-num">19</span></button></td><td><button type="button" data-select-day="28" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">28</span><span class="cal-lunar-num">20</span></button></td><td><button type="button" data-select-day="29" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">29</span><span class="cal-lunar-num">21</span></button></td></tr><tr><td><button type="button" data-select-day="30" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">30</span><span class="cal-lunar-num">22</span></button></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td></tr></tbody></table><div class="eink-footer"><span class="eink-quote">“Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.”</span><span class="font-mono-eink" style="float:right; color:var(--eink-muted);">PREVIEW</span></div></div></div></div></div></div>
         </div>
       </div>
     </div>
   </section>
 
-  <div id="toast" class="toast hidden"></div>
+  <div id="toast" class="toast hidden">Đã xóa mục khỏi thời khóa biểu</div>
 
   <script>
     // =========================================================================
@@ -2167,5 +2167,6 @@
     restartSceneTimer();
     if (config.keepAwake) { enableWakeLock(false); }
   </script>
-</body>
-</html>
+
+
+</body></html>
