@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="vi"><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Lịch E-Ink">
-  <title>Lịch Để Bàn E-Ink — Âm Lịch &amp; Thời Khóa Biểu</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;display=swap">
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Lịch E-Ink" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <title>Lịch Để Bàn E-Ink — Âm Lịch & Thời Khóa Biểu</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&display=swap" />
   <style>
     :root {
       --eink-bg: #EAE8E1;
@@ -483,7 +485,7 @@
     .eink-font-mono { font-family: "Menlo", "Courier New", Courier, monospace; }
     .eink-font-sans { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif; }
     .eink-font-serif { font-family: Georgia, "Times New Roman", Times, serif; }
-    .eink-font-handwriting { font-family: "Caveat", "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive; }
+    .eink-font-handwriting { font-family: "Patrick Hand", "Caveat", "Snell Roundhand", "Brush Script MT", "Segoe Script", cursive; letter-spacing: 0.01em; }
 
     /* Frame Shapes */
     .eink-shape-sharp .eink-bezel,
@@ -584,6 +586,69 @@
       font-weight: 700;
     }
     .cal-cell-btn.is-selected .cal-note-tag { color: var(--eink-accent-fg); }
+    /* E-Ink Music & YouTube Player */
+    .media-box {
+      border: 1px solid var(--eink-border);
+      background-color: var(--eink-surface);
+      border-radius: 7px;
+      padding: 7px 9px;
+      margin-bottom: 8px;
+    }
+    .media-top {
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+    .media-track-name {
+      float: left;
+      width: 68%;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .media-time {
+      float: right;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--eink-muted);
+    }
+    .media-progress {
+      width: 100%;
+      margin: 3px 0 5px 0;
+      accent-color: var(--eink-accent);
+      cursor: pointer;
+    }
+    .media-controls {
+      overflow: hidden;
+    }
+    .media-btn {
+      border: 1px solid var(--eink-border);
+      background: transparent;
+      color: var(--eink-ink);
+      border-radius: 5px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-right: 4px;
+    }
+    .media-btn.is-primary {
+      background-color: var(--eink-accent);
+      color: var(--eink-accent-fg);
+    }
+    .yt-frame-wrap {
+      width: 100%;
+      border: 1px solid var(--eink-border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #141413;
+    }
+    .yt-iframe {
+      width: 100%;
+      border: 0;
+      display: block;
+    }
     .eink-footer {
       margin-top: 8px;
       padding-top: 7px;
@@ -616,13 +681,15 @@
        iPOD TOUCH 5th GEN (320x568 Portrait & 568x320 Landscape) & MOBILE
        ===================================================================== */
     @media (max-width: 600px) {
-      .display-main { padding: 6px; }
-      .eink-bezel { padding: 6px; border-radius: 10px; }
+      .display-main { padding: 4px; overflow-x: hidden; }
+      .eink-bezel { padding: 5px; border-radius: 10px; }
+      .eink-screen { overflow-x: hidden; }
       .eink-status-bar { padding: 5px 8px; font-size: 9px; }
       .eink-body, .eink-col-left, .eink-col-right {
         display: block;
         width: 100%;
       }
+      .tt-list { max-height: none; overflow-y: visible; }
       .eink-col-left {
         border-right: 0;
         border-bottom: 2px solid var(--eink-border);
@@ -653,7 +720,7 @@
       .lunar-box { padding: 4px 6px; margin-bottom: 5px; }
       .scene-box { margin-bottom: 5px; }
       .scene-svg { height: 48px; }
-      .tt-list { max-height: 76px; }
+      .tt-list { max-height: 92px; overflow-y: auto; }
       .tt-item { padding: 3px 5px; margin-bottom: 3px; }
       .cal-month-title { font-size: 13px; line-height: 22px; }
       .cal-btn { padding: 2px 6px; font-size: 10px; }
@@ -921,7 +988,6 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     }
   </style>
-<script>window.__PRELOADED_CONFIG__ = {"title":"E-INK DESK · BÀN LÀM VIỆC","theme":"tri-color","timeFormat":"24h","weekStart":1,"showSeconds":true,"showLunar":true,"showBezel":true,"showGrain":true,"flashOnChange":true,"keepAwake":true,"autoQuote":true,"layoutMode":"full","frameShape":"rounded","fontStyle":"sans","bannerMode":"static","showTimetable":true,"showCalNotes":true,"frameImage":"","calNotes":{"1/12":"Họp đầu tháng"},"scene":"cat","animSpeed":"smooth","quote":"Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.","timetable":{"0":[],"1":[],"2":[],"3":[],"4":[],"5":[],"6":[]}};</script>
 </head>
 <body>
 
@@ -937,20 +1003,20 @@
       </div>
 
       <div class="nav-actions">
-        <button id="nav-display-btn" type="button" class="nav-btn">Hiển thị</button>
-        <button id="nav-admin-btn" type="button" class="nav-btn active">Admin</button>
+        <button id="nav-display-btn" type="button" class="nav-btn active">Hiển thị</button>
+        <button id="nav-admin-btn" type="button" class="nav-btn">Admin</button>
         <button id="btn-fullscreen" type="button" class="nav-btn hide-xs">Toàn màn hình</button>
       </div>
     </div>
   </header>
 
   <!-- DISPLAY VIEW -->
-  <main id="view-display" class="display-main hidden">
-    <div id="display-desk-mount"><div class="eink-shape-rounded"><div class="eink-bezel"><div id="display-desk-mount-screen" data-eink-theme="tri-color" class="eink-screen eink-font-sans eink-grain eink-flashing"><div class="eink-status-bar font-mono-eink"><span class="eink-status-left">E-INK DESK · BÀN LÀM VIỆC</span><span class="eink-status-right">HÔM NAY · <button type="button" data-toggle-awake="1" style="border:0;background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;">☀ LUÔN SÁNG</button></span></div><div class="eink-body"><div class="eink-col-left"><div class="clock-row"><div id="display-desk-mount-clock-slot" class="clock-digits">09:51<span class="clock-sec">:21</span><span class="clock-suffix"></span></div><div class="date-meta"><div class="date-dow">Thứ Sáu</div><div class="date-solar">27/11/2026</div></div></div><div class="lunar-box"><div class="lunar-title">Âm lịch: 19/10</div><div class="lunar-sub">Năm Bính Ngọ · Ngày Ất Tỵ</div></div><div class="lunar-box" style="font-size:11px; font-weight:700;">✎ Hạn nộp báo cáo</div><div id="display-desk-mount-scene-slot" class="scene-box"><svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg"><line x1="16" y1="84" x2="244" y2="84" stroke="currentColor" stroke-width="2.5"></line><polygon points="96,68 164,68 156,84 104,84" fill="none" stroke="currentColor" stroke-width="2"></polygon><path d="M130 68 Q122 54 136 42 Q144 34 132 26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"></path><path d="M131 46 Q114 42 104 34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path><ellipse cx="133.58532715878647" cy="24" rx="28" ry="12" fill="currentColor"></ellipse><ellipse cx="101.58532715878648" cy="33" rx="18" ry="9" fill="currentColor"></ellipse><ellipse cx="157.58532715878647" cy="38" rx="16" ry="8" fill="currentColor"></ellipse><ellipse cx="174.138771199858" cy="45" rx="3" ry="1.5" fill="var(--eink-accent)"></ellipse><ellipse cx="79.82707025972671" cy="32" rx="2.5" ry="1.5" fill="currentColor"></ellipse></svg></div><div class="tt-header"><span class="tt-header-left">Thời khóa biểu (T6)</span><span class="tt-header-right">0 mục</span></div><div class="tt-list"><div style="font-size:11px; color:var(--eink-muted); text-align:center; padding:12px 6px; border:1px dashed var(--eink-border); border-radius:6px;">Không có lịch trình</div></div></div><div class="eink-col-right"><div class="cal-top"><h2 class="cal-month-title">Tháng 11, 2026</h2><div class="cal-nav"><button type="button" data-cal-action="today" class="cal-btn">Hôm nay</button><button type="button" data-cal-action="prev" class="cal-btn" aria-label="Tháng trước">‹</button><button type="button" data-cal-action="next" class="cal-btn" aria-label="Tháng sau">›</button></div></div><table class="cal-table"><thead><tr><th class="">T2</th><th class="">T3</th><th class="">T4</th><th class="">T5</th><th class="">T6</th><th class="">T7</th><th class="is-sun">CN</th></tr></thead><tbody><tr><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td><button type="button" data-select-day="1" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">1</span><span class="cal-lunar-num">23</span></button></td></tr><tr><td><button type="button" data-select-day="2" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">2</span><span class="cal-lunar-num">24</span></button></td><td><button type="button" data-select-day="3" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">3</span><span class="cal-lunar-num">25</span></button></td><td><button type="button" data-select-day="4" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">4</span><span class="cal-lunar-num">26</span></button></td><td><button type="button" data-select-day="5" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">5</span><span class="cal-lunar-num">27</span></button></td><td><button type="button" data-select-day="6" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">6</span><span class="cal-lunar-num">28</span></button></td><td><button type="button" data-select-day="7" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">7</span><span class="cal-lunar-num">29</span></button></td><td><button type="button" data-select-day="8" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">8</span><span class="cal-lunar-num">30</span></button></td></tr><tr><td><button type="button" data-select-day="9" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">9</span><span class="cal-lunar-num is-special">1/10</span></button></td><td><button type="button" data-select-day="10" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">10</span><span class="cal-lunar-num">2</span></button></td><td><button type="button" data-select-day="11" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">11</span><span class="cal-lunar-num">3</span></button></td><td><button type="button" data-select-day="12" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">12</span><span class="cal-lunar-num">4</span></button></td><td><button type="button" data-select-day="13" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">13</span><span class="cal-lunar-num">5</span></button></td><td><button type="button" data-select-day="14" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">14</span><span class="cal-lunar-num">6</span></button></td><td><button type="button" data-select-day="15" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">15</span><span class="cal-lunar-num">7</span></button></td></tr><tr><td><button type="button" data-select-day="16" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">16</span><span class="cal-lunar-num">8</span></button></td><td><button type="button" data-select-day="17" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">17</span><span class="cal-lunar-num">9</span></button></td><td><button type="button" data-select-day="18" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">18</span><span class="cal-lunar-num">10</span></button></td><td><button type="button" data-select-day="19" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">19</span><span class="cal-lunar-num">11</span></button></td><td><button type="button" data-select-day="20" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">20</span><span class="cal-lunar-num">12</span></button></td><td><button type="button" data-select-day="21" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">21</span><span class="cal-lunar-num">13</span></button></td><td><button type="button" data-select-day="22" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">22</span><span class="cal-lunar-num">14</span></button></td></tr><tr><td><button type="button" data-select-day="23" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">23</span><span class="cal-lunar-num is-special">15</span></button></td><td><button type="button" data-select-day="24" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">24</span><span class="cal-lunar-num">16</span></button></td><td><button type="button" data-select-day="25" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">25</span><span class="cal-lunar-num">17</span></button></td><td><button type="button" data-select-day="26" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">26</span><span class="cal-lunar-num">18</span></button></td><td><button type="button" data-select-day="27" class="cal-cell-btn is-selected"><span class="cal-solar-num font-mono-eink">27</span><span class="cal-lunar-num">19</span><span class="cal-note-tag">Hạn nộp báo cáo</span></button></td><td><button type="button" data-select-day="28" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">28</span><span class="cal-lunar-num">20</span></button></td><td><button type="button" data-select-day="29" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">29</span><span class="cal-lunar-num">21</span></button></td></tr><tr><td><button type="button" data-select-day="30" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">30</span><span class="cal-lunar-num">22</span></button></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td></tr></tbody></table><div class="eink-footer"><span id="display-desk-mount-quote-slot"><span class="eink-quote">“Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.” <button type="button" data-next-quote="1" title="Đổi câu khác" style="border:0;background:transparent;color:var(--eink-accent);font-weight:800;cursor:pointer;padding:0 3px;font-size:10px;">↻</button></span></span><span style="float:right;"><span id="display-desk-mount-awake-corner"></span><button type="button" data-go-admin="1" class="eink-admin-link" style="float:none;">Cài đặt Admin</button></span></div></div></div></div></div></div></div>
+  <main id="view-display" class="display-main">
+    <div id="display-desk-mount"></div>
   </main>
 
   <!-- ADMIN VIEW -->
-  <section id="view-admin" class="admin-wrap">
+  <section id="view-admin" class="admin-wrap hidden">
     <div class="admin-layout">
       <!-- Left: Settings Form -->
       <div class="admin-left">
@@ -964,19 +1030,20 @@
           </div>
 
           <div class="tabs-bar">
-            <button type="button" data-admin-tab="general" class="admin-tab-btn">Giao diện</button>
+            <button type="button" data-admin-tab="general" class="admin-tab-btn active">Giao diện</button>
             <button type="button" data-admin-tab="format" class="admin-tab-btn">Định dạng</button>
             <button type="button" data-admin-tab="scene" class="admin-tab-btn">Hoạt cảnh</button>
             <button type="button" data-admin-tab="timetable" class="admin-tab-btn">Thời khóa biểu</button>
-            <button type="button" data-admin-tab="github" class="admin-tab-btn active">Lưu &amp; GitHub</button>
+            <button type="button" data-admin-tab="media" class="admin-tab-btn">Nhạc &amp; YouTube</button>
+            <button type="button" data-admin-tab="github" class="admin-tab-btn">Lưu &amp; GitHub</button>
           </div>
 
           <div class="admin-body">
             <!-- Tab: General -->
-            <div id="tab-general" class="admin-tab-panel hidden">
+            <div id="tab-general" class="admin-tab-panel">
               <div class="field-group">
                 <label class="field-label" for="inp-title">Tiêu đề góc trên</label>
-                <input id="inp-title" type="text" class="inp" placeholder="VD: Bàn làm việc · E-Ink Desk">
+                <input id="inp-title" type="text" class="inp" placeholder="VD: Bàn làm việc · E-Ink Desk" />
               </div>
 
               <div class="field-group">
@@ -989,7 +1056,7 @@
                     </button>
                   </div>
                   <div class="opt-col">
-                    <button type="button" data-theme="tri-color" class="opt-btn theme-opt active">
+                    <button type="button" data-theme="tri-color" class="opt-btn theme-opt">
                       <div class="opt-title"><span class="swatch" style="background:#B91C1C;"></span>E-Ink 3 Màu</div>
                       <div class="opt-sub">Đen + Trắng + Đỏ</div>
                     </button>
@@ -1027,23 +1094,51 @@
               </div>
 
               <div class="field-group">
-                <label class="chk-row"><span>Hiện giây trên đồng hồ</span><input id="chk-seconds" type="checkbox"></label>
-                <label class="chk-row"><span>Hiện Âm lịch &amp; Can Chi Việt Nam</span><input id="chk-lunar" type="checkbox"></label>
-                <label class="chk-row"><span>Khung viền máy E-Ink (Bezel)</span><input id="chk-bezel" type="checkbox"></label>
-                <label class="chk-row"><span>Hiệu ứng hạt giấy E-Ink (Grain)</span><input id="chk-grain" type="checkbox"></label>
-                <label class="chk-row"><span>Nháy E-Ink khi chuyển tháng</span><input id="chk-flash" type="checkbox"></label>
-                <label class="chk-row"><span>Giữ màn hình luôn sáng (Wake Lock)</span><input id="chk-awake" type="checkbox"></label>
-                <label class="chk-row"><span>Tự động đổi câu châm ngôn (Online)</span><input id="chk-auto-quote" type="checkbox"></label>
+                <label class="chk-row"><span>Hiện giây trên đồng hồ</span><input id="chk-seconds" type="checkbox" /></label>
+                <label class="chk-row"><span>Hiện Âm lịch &amp; Can Chi Việt Nam</span><input id="chk-lunar" type="checkbox" /></label>
+                <label class="chk-row"><span>Khung viền máy E-Ink (Bezel)</span><input id="chk-bezel" type="checkbox" /></label>
+                <label class="chk-row"><span>Hiệu ứng hạt giấy E-Ink (Grain)</span><input id="chk-grain" type="checkbox" /></label>
+                <label class="chk-row"><span>Nháy E-Ink khi chuyển tháng</span><input id="chk-flash" type="checkbox" /></label>
+                <label class="chk-row"><span>Giữ màn hình luôn sáng (Wake Lock)</span><input id="chk-awake" type="checkbox" /></label>
+                <label class="chk-row"><span>Tự động đổi câu châm ngôn (Online)</span><input id="chk-auto-quote" type="checkbox" /></label>
               </div>
 
               <div class="field-group">
                 <label class="field-label" for="inp-quote">Ghi chú / Châm ngôn chân trang</label>
-                <input id="inp-quote" type="text" class="inp" placeholder="VD: Làm ít lại, tập trung sâu hơn.">
+                <input id="inp-quote" type="text" class="inp" placeholder="VD: Làm ít lại, tập trung sâu hơn." />
               </div>
             </div>
 
             <!-- Tab: Format -->
             <div id="tab-format" class="admin-tab-panel hidden">
+              <div class="field-group" style="padding:10px; border:1px solid #E4E4E7; border-radius:9px; background:#FAFAFA;">
+                <div style="overflow:hidden; margin-bottom:6px;">
+                  <span class="field-label" style="float:left; margin:0;">Kích thước hiển thị (Dài × Rộng × Thu phóng)</span>
+                  <button id="btn-reset-size" type="button" style="float:right; border:0; background:transparent; color:#2563EB; font-size:10px; font-weight:700; cursor:pointer;">Mặc định</button>
+                </div>
+                <div style="margin-bottom:6px;">
+                  <div style="overflow:hidden; font-size:11px; color:#52525B;">
+                    <span style="float:left;">Chiều rộng (px)</span>
+                    <span id="lbl-width" style="float:right; font-weight:700;">Tự động</span>
+                  </div>
+                  <input id="rng-width" type="range" min="0" max="1120" step="10" value="0" style="width:100%;" />
+                </div>
+                <div style="margin-bottom:6px;">
+                  <div style="overflow:hidden; font-size:11px; color:#52525B;">
+                    <span style="float:left;">Chiều cao tối thiểu (px)</span>
+                    <span id="lbl-height" style="float:right; font-weight:700;">Tự động</span>
+                  </div>
+                  <input id="rng-height" type="range" min="0" max="760" step="10" value="0" style="width:100%;" />
+                </div>
+                <div>
+                  <div style="overflow:hidden; font-size:11px; color:#52525B;">
+                    <span style="float:left;">Thu phóng toàn khung (%)</span>
+                    <span id="lbl-scale" style="float:right; font-weight:700;">100%</span>
+                  </div>
+                  <input id="rng-scale" type="range" min="55" max="120" step="5" value="100" style="width:100%;" />
+                </div>
+              </div>
+
               <div class="field-group">
                 <label class="field-label" for="inp-layout-mode">Kiểu hiển thị (Layout)</label>
                 <select id="inp-layout-mode" class="inp">
@@ -1083,15 +1178,15 @@
               </div>
 
               <div class="field-group">
-                <label class="chk-row"><span>Hiện Thời khóa biểu</span><input id="chk-timetable" type="checkbox"></label>
-                <label class="chk-row"><span>Hiện Ghi chú trên Lịch tháng</span><input id="chk-cal-notes" type="checkbox"></label>
+                <label class="chk-row"><span>Hiện Thời khóa biểu</span><input id="chk-timetable" type="checkbox" /></label>
+                <label class="chk-row"><span>Hiện Ghi chú trên Lịch tháng</span><input id="chk-cal-notes" type="checkbox" /></label>
               </div>
 
               <div class="field-group" style="padding:9px; border:1px solid #E4E4E7; border-radius:8px; background:#FAFAFA;">
                 <span class="field-label">Ảnh cho chế độ Khung tranh (tùy chọn)</span>
                 <label class="btn-secondary" style="display:block; text-align:center; margin-bottom:5px;">
                   Chọn ảnh từ máy (tự chuyển đen trắng E-Ink)
-                  <input id="inp-frame-img" type="file" accept="image/*" class="hidden">
+                  <input id="inp-frame-img" type="file" accept="image/*" class="hidden" />
                 </label>
                 <button id="btn-clear-frame-img" type="button" class="btn-secondary" style="width:100%;">Dùng hoạt cảnh mặc định</button>
               </div>
@@ -1099,7 +1194,7 @@
               <div class="field-group" style="padding:9px; border:1px solid #E4E4E7; border-radius:8px; background:#FAFAFA;">
                 <span class="field-label">Thêm ghi chú nhanh cho ngày đang chọn</span>
                 <div style="overflow:hidden;">
-                  <input id="inp-day-note" type="text" placeholder="VD: Sinh nhật, Họp nhóm..." class="inp" style="width:72%; float:left;">
+                  <input id="inp-day-note" type="text" placeholder="VD: Sinh nhật, Họp nhóm..." class="inp" style="width:72%; float:left;" />
                   <button id="btn-save-day-note" type="button" class="btn-primary" style="width:26%; float:right;">Lưu</button>
                 </div>
               </div>
@@ -1117,7 +1212,7 @@
                     </button>
                   </div>
                   <div class="opt-col">
-                    <button type="button" data-scene="cat" class="opt-btn scene-opt active">
+                    <button type="button" data-scene="cat" class="opt-btn scene-opt">
                       <div class="opt-title">Mèo &amp; Tách trà</div>
                       <div class="opt-sub">Mèo ngủ, khói trà bay</div>
                     </button>
@@ -1164,32 +1259,64 @@
                 <span class="field-label" style="float:left;">Chọn Thứ để chỉnh sửa</span>
                 <button id="btn-reset-timetable" type="button" style="float:right; border:0; background:transparent; color:#DC2626; font-size:11px; font-weight:700; cursor:pointer;">Khôi phục mẫu</button>
               </div>
-              <div id="weekday-pills" style="margin-bottom:8px;"><button type="button" data-admin-day="1" class="pill-btn">T2 (0)</button><button type="button" data-admin-day="2" class="pill-btn">T3 (0)</button><button type="button" data-admin-day="3" class="pill-btn">T4 (0)</button><button type="button" data-admin-day="4" class="pill-btn">T5 (0)</button><button type="button" data-admin-day="5" class="pill-btn active">T6 (0)</button><button type="button" data-admin-day="6" class="pill-btn">T7 (0)</button><button type="button" data-admin-day="0" class="pill-btn">CN (0)</button></div>
+              <div id="weekday-pills" style="margin-bottom:8px;"></div>
 
               <form id="form-add-tt" style="padding:10px; border:1px solid #E4E4E7; border-radius:9px; background:#FAFAFA; margin-bottom:10px;">
                 <div style="font-size:11px; font-weight:700; margin-bottom:6px;">Thêm mục mới</div>
                 <div class="opt-grid">
                   <div class="opt-col">
                     <label style="font-size:10px; color:#71717A;">Bắt đầu</label>
-                    <input id="tt-start" type="time" value="08:00" required="" class="inp">
+                    <input id="tt-start" type="time" value="08:00" required class="inp" />
                   </div>
                   <div class="opt-col">
                     <label style="font-size:10px; color:#71717A;">Kết thúc</label>
-                    <input id="tt-end" type="time" value="09:30" required="" class="inp">
+                    <input id="tt-end" type="time" value="09:30" required class="inp" />
                   </div>
                 </div>
-                <input id="tt-title" type="text" required="" placeholder="Tên môn học / công việc..." class="inp" style="margin-bottom:6px;">
+                <input id="tt-title" type="text" required placeholder="Tên môn học / công việc..." class="inp" style="margin-bottom:6px;" />
                 <div style="overflow:hidden;">
-                  <input id="tt-note" type="text" placeholder="Phòng / ghi chú (tùy chọn)" class="inp" style="width:74%; float:left;">
+                  <input id="tt-note" type="text" placeholder="Phòng / ghi chú (tùy chọn)" class="inp" style="width:74%; float:left;" />
                   <button type="submit" class="btn-primary" style="width:24%; float:right;">Thêm</button>
                 </div>
               </form>
 
-              <div id="tt-admin-list"><div style="font-size:11px; color:#A1A1AA; text-align:center; padding:14px;">Chưa có lịch trình cho Thứ Sáu</div></div>
+              <div id="tt-admin-list"></div>
+            </div>
+
+            <!-- Tab: Media (Music & YouTube) -->
+            <div id="tab-media" class="admin-tab-panel hidden">
+              <div class="field-group">
+                <label class="field-label" for="inp-media-mode">Chế độ phát trên lịch</label>
+                <select id="inp-media-mode" class="inp">
+                  <option value="local">Nhạc có sẵn trên máy (MP3/M4A/WAV)</option>
+                  <option value="youtube">Nhạc / Video Online YouTube</option>
+                  <option value="off">Ẩn trình phát nhạc</option>
+                </select>
+              </div>
+
+              <div class="field-group" style="padding:10px; border:1px solid #E4E4E7; border-radius:9px; background:#FAFAFA;">
+                <span class="field-label">Chọn bài hát từ máy</span>
+                <label class="btn-primary" style="display:block; text-align:center; cursor:pointer;">
+                  + Chọn 1 hoặc nhiều file nhạc (MP3, M4A...)
+                  <input id="inp-audio-files" type="file" accept="audio/*" multiple class="hidden" />
+                </label>
+                <div id="admin-playlist-count" style="font-size:11px; color:#71717A; margin-top:6px;">Chưa có bài hát nào được chọn</div>
+              </div>
+
+              <div class="field-group" style="padding:10px; border:1px solid #E4E4E7; border-radius:9px; background:#FAFAFA;">
+                <label class="field-label" for="inp-yt-url">Link YouTube (Video hoặc Nhạc)</label>
+                <input id="inp-yt-url" type="text" class="inp" placeholder="VD: https://www.youtube.com/watch?v=jfKfPfyJRdk" style="margin-bottom:6px;" />
+                <label class="field-label" for="inp-yt-size">Kích thước khung YouTube</label>
+                <select id="inp-yt-size" class="inp" style="margin-bottom:6px;">
+                  <option value="compact">Thanh gọn nghe nhạc (90px)</option>
+                  <option value="video">Khung xem Video ngay trên lịch (170px)</option>
+                </select>
+                <button id="btn-apply-yt" type="button" class="btn-primary" style="width:100%;">Phát YouTube ngay</button>
+              </div>
             </div>
 
             <!-- Tab: Save & GitHub -->
-            <div id="tab-github" class="admin-tab-panel">
+            <div id="tab-github" class="admin-tab-panel hidden">
               <div style="padding:10px; border:1px solid #E4E4E7; border-radius:9px; background:#FAFAFA; margin-bottom:10px;">
                 <div style="font-size:12px; font-weight:700; margin-bottom:6px;">Đưa lên GitHub Pages &amp; iPod Gen 5</div>
                 <ol style="font-size:11px; color:#52525B; margin:0; padding-left:16px; line-height:1.5;">
@@ -1209,7 +1336,7 @@
                 <div class="opt-col">
                   <label class="btn-secondary" style="display:block; text-align:center;">
                     Nhập JSON
-                    <input id="inp-import-json" type="file" accept="application/json" class="hidden">
+                    <input id="inp-import-json" type="file" accept="application/json" class="hidden" />
                   </label>
                 </div>
               </div>
@@ -1229,21 +1356,21 @@
             ● Xem trước trực tiếp
           </div>
           <div style="float:right;">
-            <button type="button" data-preview-size="desktop" class="preview-size-btn">Rộng</button>
-            <button type="button" data-preview-size="ipod-land" class="preview-size-btn active">iPod Ngang (568px)</button>
+            <button type="button" data-preview-size="desktop" class="preview-size-btn active">Rộng</button>
+            <button type="button" data-preview-size="ipod-land" class="preview-size-btn">iPod Ngang (568px)</button>
             <button type="button" data-preview-size="ipod-port" class="preview-size-btn">iPod Dọc (320px)</button>
             <button id="btn-open-display" type="button" class="preview-size-btn" style="background:#059669; color:#FFFFFF;">Mở toàn trang</button>
           </div>
         </div>
 
-        <div id="admin-preview-container" style="margin: 0px auto; width: 100%; max-width: 568px;" class="preview-ipod-land">
-          <div id="admin-desk-mount"><div class="eink-shape-rounded"><div class="eink-bezel"><div id="admin-desk-mount-screen" data-eink-theme="tri-color" class="eink-screen eink-font-sans eink-grain"><div class="eink-status-bar font-mono-eink"><span class="eink-status-left">E-INK DESK · BÀN LÀM VIỆC</span><span class="eink-status-right">HÔM NAY · <button type="button" data-toggle-awake="1" style="border:0;background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;">☀ LUÔN SÁNG</button></span></div><div class="eink-body"><div class="eink-col-left"><div class="clock-row"><div id="admin-desk-mount-clock-slot" class="clock-digits">09:54<span class="clock-sec">:26</span><span class="clock-suffix"></span></div><div class="date-meta"><div class="date-dow">Thứ Sáu</div><div class="date-solar">27/11/2026</div></div></div><div class="lunar-box"><div class="lunar-title">Âm lịch: 19/10</div><div class="lunar-sub">Năm Bính Ngọ · Ngày Ất Tỵ</div></div><div id="admin-desk-mount-scene-slot" class="scene-box"><svg viewBox="0 0 260 96" class="scene-svg" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="10" width="58" height="54" fill="none" stroke="currentColor" stroke-width="2"></rect><line x1="43" y1="10" x2="43" y2="64" stroke="currentColor" stroke-width="1.5"></line><line x1="14" y1="37" x2="72" y2="37" stroke="currentColor" stroke-width="1.5"></line><circle cx="28" cy="23" r="6" fill="currentColor"></circle><line x1="8" y1="78" x2="252" y2="78" stroke="currentColor" stroke-width="2.5"></line><ellipse cx="135" cy="68" rx="26" ry="11" fill="currentColor"></ellipse><circle cx="114" cy="61" r="10" fill="currentColor"></circle><polygon points="106,54 109,44 114,52" fill="currentColor"></polygon><polygon points="116,52 121,44 124,54" fill="currentColor"></polygon><path d="M108 61 Q111 63 114 61" stroke="var(--eink-surface)" stroke-width="1.5" fill="none"></path><path d="M160 70 Q176 63.17666323826558 182 53.17666323826558" stroke="currentColor" stroke-width="4" stroke-linecap="round" fill="none"></path><rect x="202" y="60" width="20" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect><path d="M222 64 C228 64 228 73 222 73" fill="none" stroke="currentColor" stroke-width="2"></path><path d="M208 54 Q205 47 209 40" stroke="currentColor" stroke-width="1.5" fill="none"></path><path d="M216 48 Q219 45 215 38" stroke="currentColor" stroke-width="1.5" fill="none"></path><text x="86" y="26" font-size="9" font-family="monospace" fill="currentColor" opacity="0.7">zZz...</text></svg></div><div class="tt-header"><span class="tt-header-left">Thời khóa biểu (T6)</span><span class="tt-header-right">0 mục</span></div><div class="tt-list"><div style="font-size:11px; color:var(--eink-muted); text-align:center; padding:12px 6px; border:1px dashed var(--eink-border); border-radius:6px;">Không có lịch trình</div></div></div><div class="eink-col-right"><div class="cal-top"><h2 class="cal-month-title">Tháng 11, 2026</h2><div class="cal-nav"><button type="button" data-cal-action="today" class="cal-btn">Hôm nay</button><button type="button" data-cal-action="prev" class="cal-btn" aria-label="Tháng trước">‹</button><button type="button" data-cal-action="next" class="cal-btn" aria-label="Tháng sau">›</button></div></div><table class="cal-table"><thead><tr><th class="">T2</th><th class="">T3</th><th class="">T4</th><th class="">T5</th><th class="">T6</th><th class="">T7</th><th class="is-sun">CN</th></tr></thead><tbody><tr><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td><button type="button" data-select-day="1" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">1</span><span class="cal-lunar-num">23</span></button></td></tr><tr><td><button type="button" data-select-day="2" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">2</span><span class="cal-lunar-num">24</span></button></td><td><button type="button" data-select-day="3" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">3</span><span class="cal-lunar-num">25</span></button></td><td><button type="button" data-select-day="4" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">4</span><span class="cal-lunar-num">26</span></button></td><td><button type="button" data-select-day="5" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">5</span><span class="cal-lunar-num">27</span></button></td><td><button type="button" data-select-day="6" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">6</span><span class="cal-lunar-num">28</span></button></td><td><button type="button" data-select-day="7" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">7</span><span class="cal-lunar-num">29</span></button></td><td><button type="button" data-select-day="8" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">8</span><span class="cal-lunar-num">30</span></button></td></tr><tr><td><button type="button" data-select-day="9" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">9</span><span class="cal-lunar-num is-special">1/10</span></button></td><td><button type="button" data-select-day="10" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">10</span><span class="cal-lunar-num">2</span></button></td><td><button type="button" data-select-day="11" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">11</span><span class="cal-lunar-num">3</span></button></td><td><button type="button" data-select-day="12" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">12</span><span class="cal-lunar-num">4</span></button></td><td><button type="button" data-select-day="13" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">13</span><span class="cal-lunar-num">5</span></button></td><td><button type="button" data-select-day="14" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">14</span><span class="cal-lunar-num">6</span></button></td><td><button type="button" data-select-day="15" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">15</span><span class="cal-lunar-num">7</span></button></td></tr><tr><td><button type="button" data-select-day="16" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">16</span><span class="cal-lunar-num">8</span></button></td><td><button type="button" data-select-day="17" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">17</span><span class="cal-lunar-num">9</span></button></td><td><button type="button" data-select-day="18" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">18</span><span class="cal-lunar-num">10</span></button></td><td><button type="button" data-select-day="19" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">19</span><span class="cal-lunar-num">11</span></button></td><td><button type="button" data-select-day="20" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">20</span><span class="cal-lunar-num">12</span></button></td><td><button type="button" data-select-day="21" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">21</span><span class="cal-lunar-num">13</span></button></td><td><button type="button" data-select-day="22" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">22</span><span class="cal-lunar-num">14</span></button></td></tr><tr><td><button type="button" data-select-day="23" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">23</span><span class="cal-lunar-num is-special">15</span></button></td><td><button type="button" data-select-day="24" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">24</span><span class="cal-lunar-num">16</span></button></td><td><button type="button" data-select-day="25" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">25</span><span class="cal-lunar-num">17</span></button></td><td><button type="button" data-select-day="26" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">26</span><span class="cal-lunar-num">18</span></button></td><td><button type="button" data-select-day="27" class="cal-cell-btn is-selected"><span class="cal-solar-num font-mono-eink">27</span><span class="cal-lunar-num">19</span></button></td><td><button type="button" data-select-day="28" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">28</span><span class="cal-lunar-num">20</span></button></td><td><button type="button" data-select-day="29" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink is-special">29</span><span class="cal-lunar-num">21</span></button></td></tr><tr><td><button type="button" data-select-day="30" class="cal-cell-btn"><span class="cal-solar-num font-mono-eink">30</span><span class="cal-lunar-num">22</span></button></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td><td style="opacity:0.2;"></td></tr></tbody></table><div class="eink-footer"><span id="admin-desk-mount-quote-slot"><span class="eink-quote">“Bắt đầu từ việc quan trọng nhất ngay sáng hôm nay.” <button type="button" data-next-quote="1" title="Đổi câu khác" style="border:0;background:transparent;color:var(--eink-accent);font-weight:800;cursor:pointer;padding:0 3px;font-size:10px;">↻</button></span></span><span style="float:right;"><span id="admin-desk-mount-awake-corner"><video id="eink-awake-video" class="eink-video-clip" autoplay="" loop="" muted="" playsinline="" webkit-playsinline="" title="Hoạt cảnh giữ sáng màn hình" src="data:video/mp4;base64,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"></video></span><span class="font-mono-eink" style="color:var(--eink-muted);">PREVIEW</span></span></div></div></div></div></div></div></div>
+        <div id="admin-preview-container" style="margin:0 auto; width:100%;">
+          <div id="admin-desk-mount"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <div id="toast" class="toast hidden">Đã xóa ghi chú ngày 27/11</div>
+  <div id="toast" class="toast hidden"></div>
 
   <script>
     // =========================================================================
@@ -1444,42 +1571,10 @@
       return res;
     }
 
-    var STORAGE_KEY = "eink_desk_calendar_v1";
+    var STORAGE_KEY = "eink_desk_calendar_v2";
 
     var DEFAULT_TIMETABLE = {
-      1: [
-        { id: "m1", start: "07:30", end: "09:00", title: "Toán cao cấp A1", note: "Phòng B204" },
-        { id: "m2", start: "09:15", end: "11:30", title: "Lập trình Web", note: "Lab 302" },
-        { id: "m3", start: "14:00", end: "16:30", title: "Đọc tài liệu & Deep Work", note: "Thư viện" },
-        { id: "m4", start: "19:30", end: "21:00", title: "Ôn tập Tiếng Anh", note: "Ở nhà" }
-      ],
-      2: [
-        { id: "t1", start: "08:00", end: "10:00", title: "Cơ sở dữ liệu", note: "Phòng A105" },
-        { id: "t2", start: "13:30", end: "15:30", title: "Họp nhóm dự án", note: "Online / Zoom" },
-        { id: "t3", start: "17:30", end: "18:30", title: "Chạy bộ công viên", note: "Thể thao" }
-      ],
-      3: [
-        { id: "w1", start: "07:30", end: "10:00", title: "Kỹ thuật phần mềm", note: "Phòng C102" },
-        { id: "w2", start: "14:00", end: "16:00", title: "Thiết kế giao diện UI", note: "Studio" },
-        { id: "w3", start: "20:00", end: "21:30", title: "Đọc sách công nghệ", note: "Ở nhà" }
-      ],
-      4: [
-        { id: "th1", start: "08:30", end: "11:00", title: "Mạng máy tính", note: "Lab 201" },
-        { id: "th2", start: "15:00", end: "17:00", title: "Làm bài tập lớn", note: "Bàn làm việc" }
-      ],
-      5: [
-        { id: "f1", start: "08:00", end: "11:00", title: "Thực hành Hệ điều hành", note: "Lab 305" },
-        { id: "f2", start: "14:30", end: "16:30", title: "Tổng kết tuần", note: "Notion" },
-        { id: "f3", start: "19:00", end: "21:00", title: "Cà phê cùng bạn bè", note: "Quận 1" }
-      ],
-      6: [
-        { id: "sa1", start: "09:00", end: "11:30", title: "Dự án cá nhân (GitHub)", note: "E-Ink Calendar" },
-        { id: "sa2", start: "15:00", end: "17:00", title: "Dọn dẹp & mua sắm", note: "Cuối tuần" }
-      ],
-      0: [
-        { id: "su1", start: "08:30", end: "10:00", title: "Cà phê sáng & đọc báo", note: "Thư giãn" },
-        { id: "su2", start: "19:30", end: "21:00", title: "Lên kế hoạch tuần mới", note: "Sổ tay" }
-      ]
+      0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: []
     };
 
     var DEFAULT_CONFIG = {
@@ -1501,10 +1596,13 @@
       showTimetable: true,
       showCalNotes: true,
       frameImage: "",
-      calNotes: {
-        "27/11": "Hạn nộp báo cáo",
-        "1/12": "Họp đầu tháng"
-      },
+      customWidth: 0,
+      customHeight: 0,
+      customScale: 100,
+      calNotes: {},
+      mediaMode: "local",
+      youtubeUrl: "",
+      youtubeSize: "compact",
       scene: "auto",
       animSpeed: "eink",
       quote: "Tập trung vào từng việc nhỏ, mỗi ngày một tiến bộ.",
@@ -1876,6 +1974,7 @@
               ) : '') +
               (selDayNote ? '<div class="lunar-box" style="font-size:11px; font-weight:700;">✎ ' + escapeHtml(selDayNote) + '</div>' : '') +
               (sceneHTML ? '<div id="' + mountId + '-scene-slot" class="scene-box">' + sceneHTML + '</div>' : '') +
+              (config.mediaMode !== "off" ? '<div id="' + mountId + '-media-slot"></div>' : '') +
               (config.showTimetable ? (
                 '<div class="tt-header"><span class="tt-header-left">Thời khóa biểu (' + WEEKDAYS_SHORT[selDow] + ')</span><span class="tt-header-right">' + dayItems.length + ' mục</span></div>' +
                 '<div class="tt-list">' + timetableHTML + '</div>'
@@ -1899,10 +1998,20 @@
           '</div>';
       }
 
+      var wVal = Number(config.customWidth) || 0;
+      var hVal = Number(config.customHeight) || 0;
+      var scVal = Number(config.customScale) || 100;
+      var wrapStyle = "";
+      if (wVal > 0) wrapStyle += "max-width:" + wVal + "px; width:100%; margin:0 auto;";
+      if (scVal !== 100) {
+        var sc = (scVal / 100).toFixed(2);
+        wrapStyle += "-webkit-transform:scale(" + sc + "); transform:scale(" + sc + "); -webkit-transform-origin:top center; transform-origin:top center;";
+      }
+      var screenStyle = hVal > 0 ? ("min-height:" + hVal + "px;") : "";
       var html =
-        '<div class="' + shapeWrapClass + '">' +
+        '<div class="' + shapeWrapClass + '" style="' + wrapStyle + '">' +
           '<div class="' + (config.showBezel ? 'eink-bezel' : '') + '">' +
-            '<div id="' + mountId + '-screen" data-eink-theme="' + config.theme + '" class="' + screenClass + '">' +
+            '<div id="' + mountId + '-screen" data-eink-theme="' + config.theme + '" class="' + screenClass + '" style="' + screenStyle + '">' +
               '<div class="eink-status-bar font-mono-eink">' +
                 '<span class="eink-status-left">' + escapeHtml(config.title || "E-INK DESK") + '</span>' +
                 '<span class="eink-status-right">' + (isSelectedToday ? "HÔM NAY" : "ĐANG XEM") + ' · <button type="button" data-toggle-awake="1" style="border:0;background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer;padding:0;text-decoration:underline;">' + getAwakeLabel() + '</button></span>' +
@@ -1932,6 +2041,7 @@
         buildDeskHTML("admin-desk-mount", true);
       }
       attachWakeVideoToActiveMount();
+      attachMediaToActiveMount();
     }
 
     function updateLiveTick() {
@@ -2089,10 +2199,22 @@
         sb.className = "opt-btn scene-opt" + (sb.getAttribute("data-scene") === config.scene ? " active" : "");
       }
 
+      var wVal = Number(config.customWidth) || 0;
+      var hVal = Number(config.customHeight) || 0;
+      var scVal = Number(config.customScale) || 100;
+      document.getElementById("rng-width").value = wVal;
+      document.getElementById("rng-height").value = hVal;
+      document.getElementById("rng-scale").value = scVal;
+      document.getElementById("lbl-width").textContent = wVal > 0 ? (wVal + "px") : "Tự động";
+      document.getElementById("lbl-height").textContent = hVal > 0 ? (hVal + "px") : "Tự động";
+      document.getElementById("lbl-scale").textContent = scVal + "%";
       document.getElementById("inp-layout-mode").value = config.layoutMode;
       document.getElementById("inp-frame-shape").value = config.frameShape;
       document.getElementById("inp-font-style").value = config.fontStyle;
       document.getElementById("inp-banner-mode").value = config.bannerMode;
+      document.getElementById("inp-media-mode").value = config.mediaMode;
+      document.getElementById("inp-yt-url").value = config.youtubeUrl || "";
+      document.getElementById("inp-yt-size").value = config.youtubeSize || "compact";
       document.getElementById("chk-timetable").checked = config.showTimetable;
       document.getElementById("chk-cal-notes").checked = config.showCalNotes;
       var selKey = selectedDate.getDate() + "/" + (selectedDate.getMonth() + 1);
@@ -2126,6 +2248,31 @@
     document.getElementById("inp-time-format").addEventListener("change", function (e) {
       config.timeFormat = e.target.value;
       saveConfig(); renderAllDisplays();
+    });
+    document.getElementById("rng-width").addEventListener("input", function (e) {
+      var v = Number(e.target.value) || 0;
+      config.customWidth = v;
+      document.getElementById("lbl-width").textContent = v > 0 ? (v + "px") : "Tự động";
+      saveConfig(); renderAllDisplays();
+    });
+    document.getElementById("rng-height").addEventListener("input", function (e) {
+      var v = Number(e.target.value) || 0;
+      config.customHeight = v;
+      document.getElementById("lbl-height").textContent = v > 0 ? (v + "px") : "Tự động";
+      saveConfig(); renderAllDisplays();
+    });
+    document.getElementById("rng-scale").addEventListener("input", function (e) {
+      var v = Number(e.target.value) || 100;
+      config.customScale = v;
+      document.getElementById("lbl-scale").textContent = v + "%";
+      saveConfig(); renderAllDisplays();
+    });
+    document.getElementById("btn-reset-size").addEventListener("click", function () {
+      config.customWidth = 0;
+      config.customHeight = 0;
+      config.customScale = 100;
+      saveConfig(); syncAdminInputs(); renderAllDisplays();
+      showToast("Đã đặt lại kích thước tự động");
     });
     document.getElementById("inp-layout-mode").addEventListener("change", function (e) {
       config.layoutMode = e.target.value;
@@ -2584,6 +2731,203 @@
     }, 25000);
 
     // =========================================================================
+    // 7D. MUSIC & YOUTUBE PLAYER ENGINE (Persistent DOM, ES5)
+    // =========================================================================
+    var localTracks = [];
+    var currentTrackIdx = 0;
+    var audioEl = null;
+    var mediaRootEl = null;
+    var ytLoadedId = "";
+
+    function formatMediaSec(sec) {
+      if (!isFinite(sec) || sec < 0) return "00:00";
+      var m = Math.floor(sec / 60);
+      var r = Math.floor(sec % 60);
+      return pad2(m) + ":" + pad2(r);
+    }
+
+    function extractYoutubeId(url) {
+      if (!url) return "";
+      var m1 = url.match(/[?&]v=([a-zA-Z0-9_-]{6,})/);
+      if (m1) return m1[1];
+      var m2 = url.match(/youtu\.be\/([a-zA-Z0-9_-]{6,})/);
+      if (m2) return m2[1];
+      var m3 = url.match(/youtube\.com\/(?:embed|shorts|live)\/([a-zA-Z0-9_-]{6,})/);
+      if (m3) return m3[1];
+      if (/^[a-zA-Z0-9_-]{11}$/.test(url.replace(/^\s+|\s+$/g, ""))) return url.replace(/^\s+|\s+$/g, "");
+      return "";
+    }
+
+    function ensureAudioEl() {
+      if (audioEl) return audioEl;
+      audioEl = new Audio();
+      audioEl.addEventListener("timeupdate", updateAudioProgressUI);
+      audioEl.addEventListener("loadedmetadata", updateAudioProgressUI);
+      audioEl.addEventListener("ended", function () {
+        if (localTracks.length > 0) {
+          playLocalTrack((currentTrackIdx + 1) % localTracks.length);
+        }
+      });
+      audioEl.addEventListener("play", updateMediaUI);
+      audioEl.addEventListener("pause", updateMediaUI);
+      return audioEl;
+    }
+
+    function playLocalTrack(idx) {
+      if (!localTracks.length) return;
+      currentTrackIdx = (idx + localTracks.length) % localTracks.length;
+      var a = ensureAudioEl();
+      var tr = localTracks[currentTrackIdx];
+      if (a.src !== tr.url) {
+        a.src = tr.url;
+      }
+      try { a.play(); } catch (e) {}
+      updateMediaUI();
+    }
+
+    function updateAudioProgressUI() {
+      if (!mediaRootEl || !audioEl) return;
+      var timeEl = mediaRootEl.querySelector("#eink-media-time");
+      var progEl = mediaRootEl.querySelector("#eink-media-prog");
+      var cur = audioEl.currentTime || 0;
+      var dur = audioEl.duration || 0;
+      if (timeEl) {
+        timeEl.textContent = formatMediaSec(cur) + " / " + formatMediaSec(dur);
+      }
+      if (progEl && dur > 0) {
+        progEl.value = Math.round((cur / dur) * 100);
+      }
+    }
+
+    function buildMediaRoot() {
+      if (!mediaRootEl) {
+        mediaRootEl = document.createElement("div");
+        mediaRootEl.className = "media-box";
+      }
+      if (config.mediaMode === "youtube") {
+        var vid = extractYoutubeId(config.youtubeUrl);
+        var h = config.youtubeSize === "video" ? "165" : "86";
+        if (!vid) {
+          mediaRootEl.innerHTML =
+            '<div style="font-size:11px; font-weight:700; margin-bottom:4px;">YouTube (Chưa có link)</div>' +
+            '<div style="font-size:10px; color:var(--eink-muted);">Vào <b>Admin → Nhạc &amp; YouTube</b> để dán link video/nhạc.</div>';
+          ytLoadedId = "";
+        } else if (ytLoadedId !== vid + "_" + h || !mediaRootEl.querySelector("iframe")) {
+          ytLoadedId = vid + "_" + h;
+          mediaRootEl.innerHTML =
+            '<div style="overflow:hidden; margin-bottom:4px;">' +
+              '<span style="float:left; font-size:10px; font-weight:800;">▶ YOUTUBE</span>' +
+              '<span style="float:right;">' +
+                '<a href="https://www.youtube.com/watch?v=' + vid + '" target="_blank" rel="noopener" style="color:var(--eink-muted); font-size:10px; font-weight:700; margin-right:8px; text-decoration:underline;">Mở YT ↗</a>' +
+                '<button type="button" id="btn-yt-toggle-size" style="border:0; background:transparent; color:var(--eink-accent); font-size:10px; font-weight:700; cursor:pointer; padding:0; text-decoration:underline;">' + (config.youtubeSize === "video" ? "Thu gọn" : "Xem Video lớn") + '</button>' +
+              '</span>' +
+            '</div>' +
+            '<div class="yt-frame-wrap"><iframe class="yt-iframe" height="' + h + '" src="https://www.youtube-nocookie.com/embed/' + vid + '?playsinline=1&rel=0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+          mediaRootEl.querySelector("#btn-yt-toggle-size").addEventListener("click", function () {
+            config.youtubeSize = config.youtubeSize === "video" ? "compact" : "video";
+            saveConfig();
+            buildMediaRoot();
+          });
+        }
+        return mediaRootEl;
+      }
+
+      // Local Music Mode
+      ytLoadedId = "";
+      var hasTracks = localTracks.length > 0;
+      var trName = hasTracks ? localTracks[currentTrackIdx].name : "Chưa chọn bài hát trên máy";
+      var isPlaying = audioEl && !audioEl.paused;
+      mediaRootEl.innerHTML =
+        '<div class="media-top">' +
+          '<span class="media-track-name">' + (isPlaying ? "♪ " : "♫ ") + escapeHtml(trName) + '</span>' +
+          '<span id="eink-media-time" class="media-time font-mono-eink">00:00 / 00:00</span>' +
+        '</div>' +
+        '<input id="eink-media-prog" type="range" min="0" max="100" value="0" class="media-progress" />' +
+        '<div class="media-controls">' +
+          '<button type="button" id="btn-m-prev" class="media-btn">⏮</button>' +
+          '<button type="button" id="btn-m-play" class="media-btn is-primary">' + (isPlaying ? "❚❚ Tạm dừng" : "▶ Phát nhạc") + '</button>' +
+          '<button type="button" id="btn-m-next" class="media-btn">⏭</button>' +
+          '<label class="media-btn" style="float:right; margin-right:0;">+ Chọn nhạc<input id="inp-quick-audio" type="file" accept="audio/*" multiple class="hidden" /></label>' +
+        '</div>';
+
+      mediaRootEl.querySelector("#btn-m-play").addEventListener("click", function () {
+        if (!localTracks.length) {
+          showToast("Hãy bấm + Chọn nhạc để thêm bài hát từ máy");
+          return;
+        }
+        var a = ensureAudioEl();
+        if (a.paused) {
+          if (!a.src) a.src = localTracks[currentTrackIdx].url;
+          try { a.play(); } catch (e) {}
+        } else {
+          a.pause();
+        }
+        updateMediaUI();
+      });
+      mediaRootEl.querySelector("#btn-m-prev").addEventListener("click", function () { playLocalTrack(currentTrackIdx - 1); });
+      mediaRootEl.querySelector("#btn-m-next").addEventListener("click", function () { playLocalTrack(currentTrackIdx + 1); });
+      mediaRootEl.querySelector("#eink-media-prog").addEventListener("input", function (e) {
+        if (audioEl && audioEl.duration) {
+          audioEl.currentTime = (Number(e.target.value) / 100) * audioEl.duration;
+        }
+      });
+      mediaRootEl.querySelector("#inp-quick-audio").addEventListener("change", handleAudioFilesSelected);
+      updateAudioProgressUI();
+      return mediaRootEl;
+    }
+
+    function updateMediaUI() {
+      if (config.mediaMode === "local") buildMediaRoot();
+    }
+
+    function attachMediaToActiveMount() {
+      if (config.mediaMode === "off") return;
+      var mountId = currentRoute === "display" ? "display-desk-mount" : "admin-desk-mount";
+      var slot = document.getElementById(mountId + "-media-slot");
+      if (!slot) return;
+      var el = buildMediaRoot();
+      if (el && el.parentNode !== slot) {
+        slot.appendChild(el);
+      }
+    }
+
+    function handleAudioFilesSelected(e) {
+      var files = e.target.files;
+      if (!files || !files.length) return;
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        localTracks.push({
+          name: f.name.replace(/\.[^/.]+$/, ""),
+          url: URL.createObjectURL(f)
+        });
+      }
+      var cntEl = document.getElementById("admin-playlist-count");
+      if (cntEl) cntEl.textContent = "Đã nạp " + localTracks.length + " bài hát";
+      config.mediaMode = "local";
+      saveConfig();
+      playLocalTrack(localTracks.length - files.length);
+      attachMediaToActiveMount();
+      showToast("Đã thêm " + files.length + " bài hát!");
+    }
+
+    document.getElementById("inp-audio-files").addEventListener("change", handleAudioFilesSelected);
+    document.getElementById("inp-media-mode").addEventListener("change", function (e) {
+      config.mediaMode = e.target.value;
+      saveConfig(); renderAllDisplays();
+    });
+    document.getElementById("inp-yt-size").addEventListener("change", function (e) {
+      config.youtubeSize = e.target.value;
+      saveConfig(); ytLoadedId = ""; renderAllDisplays();
+    });
+    document.getElementById("btn-apply-yt").addEventListener("click", function () {
+      config.youtubeUrl = document.getElementById("inp-yt-url").value.replace(/^\s+|\s+$/g, "");
+      config.mediaMode = "youtube";
+      ytLoadedId = "";
+      saveConfig(); syncAdminInputs(); renderAllDisplays();
+      showToast("Đã cập nhật link YouTube!");
+    });
+
+    // =========================================================================
     // 8. TIMERS & INIT
     // =========================================================================
     function restartSceneTimer() {
@@ -2601,6 +2945,5 @@
     ensureWakeVideo();
     fetchOnlineQuotes();
   </script>
-
-
-</body></html>
+</body>
+</html>
