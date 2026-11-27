@@ -638,6 +638,57 @@
       background-color: var(--eink-accent);
       color: var(--eink-accent-fg);
     }
+    .album-tabs {
+      margin-top: 5px;
+      white-space: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+    .album-pill {
+      display: inline-block;
+      border: 1px solid var(--eink-border);
+      background: transparent;
+      color: var(--eink-ink);
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 9.5px;
+      font-weight: 700;
+      margin-right: 4px;
+      cursor: pointer;
+    }
+    .album-pill.is-active {
+      background-color: var(--eink-accent);
+      color: var(--eink-accent-fg);
+    }
+    .track-drawer {
+      margin-top: 5px;
+      max-height: 92px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      border-top: 1px dashed var(--eink-border);
+      padding-top: 4px;
+    }
+    .track-row {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      color: var(--eink-ink);
+      padding: 3px 4px;
+      font-size: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .track-row.is-playing {
+      background-color: var(--eink-accent);
+      color: var(--eink-accent-fg);
+      font-weight: 700;
+    }
     .yt-frame-wrap {
       width: 100%;
       border: 1px solid var(--eink-border);
@@ -1313,6 +1364,10 @@
                 <label class="btn-primary" style="display:block; text-align:center; cursor:pointer;">
                   + Chọn 1 hoặc nhiều file nhạc (MP3, M4A...)
                   <input id="inp-audio-files" type="file" accept="audio/*" multiple class="hidden" />
+                </label>
+                <label class="btn-secondary" style="display:block; text-align:center; cursor:pointer; margin-top:5px;">
+                  + Chọn cả Thư mục nhạc (PC / Android)
+                  <input id="inp-audio-folder" type="file" webkitdirectory directory multiple class="hidden" />
                 </label>
                 <div id="admin-playlist-count" style="font-size:11px; color:#71717A; margin-top:6px;">Chưa có bài hát nào được chọn</div>
               </div>
@@ -2751,9 +2806,13 @@
     // =========================================================================
     var localTracks = [];
     var currentTrackIdx = 0;
+    var activeAlbum = "Tất cả";
+    var showTrackDrawer = false;
     var audioEl = null;
     var mediaRootEl = null;
     var ytLoadedId = "";
+    var IDB_NAME = "eink_music_db_v1";
+    var IDB_STORE = "tracks";
 
     function formatMediaSec(sec) {
       if (!isFinite(sec) || sec < 0) return "00:00";
@@ -2774,14 +2833,177 @@
       return "";
     }
 
+    // Lightweight ES5 ID3v2 parser (reads TIT2 Title, TALB Album, TPE1 Artist)
+    function decodeID3Text(bytes, start, len) {
+      if (len <= 1) return "";
+      var enc = bytes[start];
+      var s = start + 1;
+      var end = start + len;
+      var out = "";
+      if (enc === 1 || enc === 2) {
+        var isLE = (enc === 1 && s + 1 < end && bytes[s] === 0xFF && bytes[s + 1] === 0xFE);
+        if (enc === 1 && s + 1 < end && ((bytes[s] === 0xFF && bytes[s + 1] === 0xFE) || (bytes[s] === 0xFE && bytes[s + 1] === 0xFF))) {
+          s += 2;
+        }
+        for (var i = s; i + 1 < end; i += 2) {
+          var code = isLE ? (bytes[i] | (bytes[i + 1] << 8)) : ((bytes[i] << 8) | bytes[i + 1]);
+          if (code === 0) break;
+          out += String.fromCharCode(code);
+        }
+      } else {
+        for (var j = s; j < end; j++) {
+          if (bytes[j] === 0) break;
+          out += String.fromCharCode(bytes[j]);
+        }
+        if (enc === 3) {
+          try { out = decodeURIComponent(escape(out)); } catch (e) {}
+        }
+      }
+      return out.replace(/^\s+|\s+$/g, "");
+    }
+
+    function readAudioTags(file, fallbackAlbum, cb) {
+      var fallbackTitle = file.name.replace(/\.[^/.]+$/, "");
+      var result = { title: fallbackTitle, album: fallbackAlbum || "Chưa phân loại", artist: "" };
+      try {
+        var slice = file.slice(0, 65536);
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var buf = new Uint8Array(reader.result);
+            if (buf.length > 10 && buf[0] === 73 && buf[1] === 68 && buf[2] === 51) { // "ID3"
+              var tagSize = ((buf[6] & 0x7F) << 21) | ((buf[7] & 0x7F) << 14) | ((buf[8] & 0x7F) << 7) | (buf[9] & 0x7F);
+              var pos = 10;
+              var limit = Math.min(buf.length, 10 + tagSize);
+              while (pos + 10 < limit) {
+                var fid = String.fromCharCode(buf[pos], buf[pos + 1], buf[pos + 2], buf[pos + 3]);
+                var fsize = (buf[pos + 4] << 24) | (buf[pos + 5] << 16) | (buf[pos + 6] << 8) | buf[pos + 7];
+                if (fsize <= 0 || pos + 10 + fsize > limit) break;
+                if (fid === "TIT2") {
+                  var t = decodeID3Text(buf, pos + 10, fsize);
+                  if (t) result.title = t;
+                } else if (fid === "TALB") {
+                  var al = decodeID3Text(buf, pos + 10, fsize);
+                  if (al) result.album = al;
+                } else if (fid === "TPE1") {
+                  var ar = decodeID3Text(buf, pos + 10, fsize);
+                  if (ar) result.artist = ar;
+                }
+                pos += 10 + fsize;
+              }
+            }
+          } catch (e) {}
+          cb(result);
+        };
+        reader.onerror = function () { cb(result); };
+        reader.readAsArrayBuffer(slice);
+      } catch (e) {
+        cb(result);
+      }
+    }
+
+    function saveTracksToIDB(tracksToSave) {
+      try {
+        if (!window.indexedDB) return;
+        var req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = function (ev) {
+          var db = ev.target.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) {
+            db.createObjectStore(IDB_STORE, { keyPath: "id" });
+          }
+        };
+        req.onsuccess = function (ev) {
+          try {
+            var db = ev.target.result;
+            var tx = db.transaction(IDB_STORE, "readwrite");
+            var store = tx.objectStore(IDB_STORE);
+            store.clear();
+            for (var i = 0; i < tracksToSave.length; i++) {
+              var tr = tracksToSave[i];
+              if (tr.blob) {
+                store.put({ id: i + 1, name: tr.name, album: tr.album, artist: tr.artist, blob: tr.blob });
+              }
+            }
+          } catch (e) {}
+        };
+      } catch (e) {}
+    }
+
+    function loadTracksFromIDB() {
+      try {
+        if (!window.indexedDB) return;
+        var req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = function (ev) {
+          var db = ev.target.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) {
+            db.createObjectStore(IDB_STORE, { keyPath: "id" });
+          }
+        };
+        req.onsuccess = function (ev) {
+          try {
+            var db = ev.target.result;
+            if (!db.objectStoreNames.contains(IDB_STORE)) return;
+            var tx = db.transaction(IDB_STORE, "readonly");
+            var store = tx.objectStore(IDB_STORE);
+            var getAll = store.getAll ? store.getAll() : null;
+            if (!getAll) return;
+            getAll.onsuccess = function () {
+              var rows = getAll.result || [];
+              if (rows.length > 0 && localTracks.length === 0) {
+                for (var i = 0; i < rows.length; i++) {
+                  var r = rows[i];
+                  localTracks.push({
+                    name: r.name,
+                    album: r.album || "Chưa phân loại",
+                    artist: r.artist || "",
+                    blob: r.blob,
+                    url: URL.createObjectURL(r.blob)
+                  });
+                }
+                var cntEl = document.getElementById("admin-playlist-count");
+                if (cntEl) cntEl.textContent = "Đã tự động tải " + localTracks.length + " bài hát đã lưu";
+                updateMediaUI();
+              }
+            };
+          } catch (e) {}
+        };
+      } catch (e) {}
+    }
+
+    function getAlbumList() {
+      var map = {};
+      var list = ["Tất cả"];
+      for (var i = 0; i < localTracks.length; i++) {
+        var al = localTracks[i].album || "Chưa phân loại";
+        if (!map[al]) {
+          map[al] = true;
+          list.push(al);
+        }
+      }
+      return list;
+    }
+
+    function getFilteredTrackIndices() {
+      var res = [];
+      for (var i = 0; i < localTracks.length; i++) {
+        if (activeAlbum === "Tất cả" || (localTracks[i].album || "Chưa phân loại") === activeAlbum) {
+          res.push(i);
+        }
+      }
+      return res;
+    }
+
     function ensureAudioEl() {
       if (audioEl) return audioEl;
       audioEl = new Audio();
       audioEl.addEventListener("timeupdate", updateAudioProgressUI);
       audioEl.addEventListener("loadedmetadata", updateAudioProgressUI);
       audioEl.addEventListener("ended", function () {
-        if (localTracks.length > 0) {
-          playLocalTrack((currentTrackIdx + 1) % localTracks.length);
+        var filtered = getFilteredTrackIndices();
+        if (filtered.length > 0) {
+          var pos = filtered.indexOf(currentTrackIdx);
+          var nextIdx = filtered[(pos + 1) % filtered.length];
+          playLocalTrack(nextIdx);
         }
       });
       audioEl.addEventListener("play", updateMediaUI);
@@ -2848,11 +3070,37 @@
         return mediaRootEl;
       }
 
-      // Local Music Mode
+      // Local Music Mode with Album Grouping
       ytLoadedId = "";
       var hasTracks = localTracks.length > 0;
-      var trName = hasTracks ? localTracks[currentTrackIdx].name : "Chưa chọn bài hát trên máy";
+      var curTr = hasTracks ? localTracks[currentTrackIdx] : null;
+      var trName = curTr ? (curTr.name + (curTr.artist ? " · " + curTr.artist : "")) : "Chưa chọn bài hát trên máy";
       var isPlaying = audioEl && !audioEl.paused;
+      var albums = getAlbumList();
+      var filteredIdx = getFilteredTrackIndices();
+
+      var albumTabsHTML = "";
+      if (hasTracks && albums.length > 1) {
+        albumTabsHTML = '<div class="album-tabs">';
+        for (var ai = 0; ai < albums.length; ai++) {
+          var alName = albums[ai];
+          albumTabsHTML += '<button type="button" data-album-tab="' + escapeHtml(alName) + '" class="album-pill' + (activeAlbum === alName ? ' is-active' : '') + '">' + escapeHtml(alName) + '</button>';
+        }
+        albumTabsHTML += '</div>';
+      }
+
+      var drawerHTML = "";
+      if (hasTracks && showTrackDrawer) {
+        drawerHTML = '<div class="track-drawer">';
+        for (var fi = 0; fi < filteredIdx.length; fi++) {
+          var ti = filteredIdx[fi];
+          var trObj = localTracks[ti];
+          var isCur = (ti === currentTrackIdx);
+          drawerHTML += '<button type="button" data-play-idx="' + ti + '" class="track-row' + (isCur ? ' is-playing' : '') + '">' + (isCur ? '▶ ' : (fi + 1) + '. ') + escapeHtml(trObj.name) + ' <span style="opacity:0.65;">[' + escapeHtml(trObj.album) + ']</span></button>';
+        }
+        drawerHTML += '</div>';
+      }
+
       mediaRootEl.innerHTML =
         '<div class="media-top">' +
           '<span class="media-track-name">' + (isPlaying ? "♪ " : "♫ ") + escapeHtml(trName) + '</span>' +
@@ -2861,10 +3109,13 @@
         '<input id="eink-media-prog" type="range" min="0" max="100" value="0" class="media-progress" />' +
         '<div class="media-controls">' +
           '<button type="button" id="btn-m-prev" class="media-btn">⏮</button>' +
-          '<button type="button" id="btn-m-play" class="media-btn is-primary">' + (isPlaying ? "❚❚ Tạm dừng" : "▶ Phát nhạc") + '</button>' +
+          '<button type="button" id="btn-m-play" class="media-btn is-primary">' + (isPlaying ? "❚❚ Dừng" : "▶ Phát") + '</button>' +
           '<button type="button" id="btn-m-next" class="media-btn">⏭</button>' +
+          (hasTracks ? '<button type="button" id="btn-m-list" class="media-btn">' + (showTrackDrawer ? 'Ẩn DS' : 'Album (' + filteredIdx.length + ')') + '</button>' : '') +
           '<label class="media-btn" style="float:right; margin-right:0;">+ Chọn nhạc<input id="inp-quick-audio" type="file" accept="audio/*" multiple class="hidden" /></label>' +
-        '</div>';
+        '</div>' +
+        albumTabsHTML +
+        drawerHTML;
 
       mediaRootEl.querySelector("#btn-m-play").addEventListener("click", function () {
         if (!localTracks.length) {
@@ -2880,14 +3131,47 @@
         }
         updateMediaUI();
       });
-      mediaRootEl.querySelector("#btn-m-prev").addEventListener("click", function () { playLocalTrack(currentTrackIdx - 1); });
-      mediaRootEl.querySelector("#btn-m-next").addEventListener("click", function () { playLocalTrack(currentTrackIdx + 1); });
+      mediaRootEl.querySelector("#btn-m-prev").addEventListener("click", function () {
+        var f = getFilteredTrackIndices();
+        if (!f.length) return;
+        var pos = f.indexOf(currentTrackIdx);
+        playLocalTrack(f[(pos - 1 + f.length) % f.length]);
+      });
+      mediaRootEl.querySelector("#btn-m-next").addEventListener("click", function () {
+        var f = getFilteredTrackIndices();
+        if (!f.length) return;
+        var pos = f.indexOf(currentTrackIdx);
+        playLocalTrack(f[(pos + 1) % f.length]);
+      });
+      var btnList = mediaRootEl.querySelector("#btn-m-list");
+      if (btnList) {
+        btnList.addEventListener("click", function () {
+          showTrackDrawer = !showTrackDrawer;
+          updateMediaUI();
+        });
+      }
       mediaRootEl.querySelector("#eink-media-prog").addEventListener("input", function (e) {
         if (audioEl && audioEl.duration) {
           audioEl.currentTime = (Number(e.target.value) / 100) * audioEl.duration;
         }
       });
       mediaRootEl.querySelector("#inp-quick-audio").addEventListener("change", handleAudioFilesSelected);
+
+      var albBtns = mediaRootEl.querySelectorAll("[data-album-tab]");
+      for (var bi = 0; bi < albBtns.length; bi++) {
+        albBtns[bi].addEventListener("click", function () {
+          activeAlbum = this.getAttribute("data-album-tab");
+          showTrackDrawer = true;
+          updateMediaUI();
+        });
+      }
+      var trBtns = mediaRootEl.querySelectorAll("[data-play-idx]");
+      for (var ri = 0; ri < trBtns.length; ri++) {
+        trBtns[ri].addEventListener("click", function () {
+          playLocalTrack(Number(this.getAttribute("data-play-idx")));
+        });
+      }
+
       updateAudioProgressUI();
       return mediaRootEl;
     }
@@ -2910,23 +3194,50 @@
     function handleAudioFilesSelected(e) {
       var files = e.target.files;
       if (!files || !files.length) return;
+      var audioFiles = [];
       for (var i = 0; i < files.length; i++) {
         var f = files[i];
-        localTracks.push({
-          name: f.name.replace(/\.[^/.]+$/, ""),
-          url: URL.createObjectURL(f)
-        });
+        if (!f.type || f.type.indexOf("audio/") === 0 || /\.(mp3|m4a|wav|ogg|aac|flac)$/i.test(f.name)) {
+          audioFiles.push(f);
+        }
       }
-      var cntEl = document.getElementById("admin-playlist-count");
-      if (cntEl) cntEl.textContent = "Đã nạp " + localTracks.length + " bài hát";
-      config.mediaMode = "local";
-      saveConfig();
-      playLocalTrack(localTracks.length - files.length);
-      attachMediaToActiveMount();
-      showToast("Đã thêm " + files.length + " bài hát!");
+      if (!audioFiles.length) {
+        showToast("Không tìm thấy file nhạc hợp lệ");
+        return;
+      }
+      var pending = audioFiles.length;
+      var startLen = localTracks.length;
+      for (var j = 0; j < audioFiles.length; j++) {
+        (function (fileObj) {
+          var rel = fileObj.webkitRelativePath || "";
+          var parts = rel ? rel.split("/") : [];
+          var folderAlbum = parts.length >= 2 ? parts[parts.length - 2] : "Nhạc trên máy";
+          readAudioTags(fileObj, folderAlbum, function (meta) {
+            localTracks.push({
+              name: meta.title,
+              album: meta.album,
+              artist: meta.artist,
+              blob: fileObj,
+              url: URL.createObjectURL(fileObj)
+            });
+            pending--;
+            if (pending === 0) {
+              var cntEl = document.getElementById("admin-playlist-count");
+              if (cntEl) cntEl.textContent = "Đã nạp " + localTracks.length + " bài hát (" + (getAlbumList().length - 1) + " Album)";
+              config.mediaMode = "local";
+              saveConfig();
+              saveTracksToIDB(localTracks);
+              playLocalTrack(startLen);
+              attachMediaToActiveMount();
+              showToast("Đã nạp " + audioFiles.length + " bài hát & phân loại theo Album!");
+            }
+          });
+        })(audioFiles[j]);
+      }
     }
 
     document.getElementById("inp-audio-files").addEventListener("change", handleAudioFilesSelected);
+    document.getElementById("inp-audio-folder").addEventListener("change", handleAudioFilesSelected);
     document.getElementById("inp-media-mode").addEventListener("change", function (e) {
       config.mediaMode = e.target.value;
       saveConfig(); renderAllDisplays();
@@ -2960,6 +3271,7 @@
     if (config.keepAwake) { enableWakeLock(false); }
     ensureWakeVideo();
     fetchOnlineQuotes();
+    loadTracksFromIDB();
   </script>
 </body>
 </html>
